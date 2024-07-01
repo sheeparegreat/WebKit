@@ -95,6 +95,16 @@ void logMessageImpl(const Connection& connection, MessageName messageName, void*
 #endif
 }
 
+#if ENABLE(IPC_TRACE)
+inline void IPCTrace(MessageName messageName, Decoder& decoder)
+{
+    TextStream stream(TextStream::LineMode::SingleLine, { }, loggingContainerSizeLimit);
+    size_t length = decoder.span().size_bytes();
+    stream << description(messageName) << "," << length;
+    RELEASE_LOG(IPCTrace, "%s", stream.release().utf8().data());
+}
+#endif
+
 template<typename ArgsTuple, typename ArgsIndices = std::make_index_sequence<std::tuple_size<ArgsTuple>::value>>
 void logMessage(const Connection& connection, MessageName messageName, void* object, const ArgsTuple& args)
 {
@@ -224,6 +234,11 @@ void handleMessage(Connection& connection, Decoder& decoder, T* object, MF U::* 
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
 
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
+
     auto arguments = decoder.decode<typename MessageType::Arguments>();
     if (UNLIKELY(!arguments))
         return;
@@ -241,6 +256,11 @@ void handleMessageWithoutUsingIPCConnection(Decoder& decoder, T* object, MF U::*
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
 
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
+
     auto arguments = decoder.decode<typename MessageType::Arguments>();
     if (UNLIKELY(!arguments))
         return;
@@ -253,6 +273,11 @@ bool handleMessageSynchronous(Connection& connection, Decoder& decoder, UniqueRe
 {
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
+
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
 
     auto arguments = decoder.decode<typename MessageType::Arguments>();
     if (UNLIKELY(!arguments))
@@ -282,6 +307,11 @@ void handleMessageSynchronous(StreamServerConnection& connection, Decoder& decod
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
 
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
+
     auto syncRequestID = decoder.decode<Connection::SyncRequestID>();
     if (UNLIKELY(!syncRequestID))
         return;
@@ -310,6 +340,11 @@ void handleMessageAsync(Connection& connection, Decoder& decoder, T* object, MF 
 {
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
+
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
 
     auto arguments = decoder.decode<typename MessageType::Arguments>();
     if (UNLIKELY(!arguments))
@@ -342,6 +377,11 @@ void handleMessageAsyncWithoutUsingIPCConnection(Decoder& decoder, Function<void
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, typename MessageType::Arguments>);
 
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
+
     auto arguments = decoder.decode<typename MessageType::Arguments>();
     if (UNLIKELY(!arguments))
         return;
@@ -364,6 +404,11 @@ void handleMessageAsyncWithReplyID(Connection& connection, Decoder& decoder, T* 
 {
     using ValidationType = MethodSignatureValidation<MF>;
     static_assert(std::is_same_v<typename ValidationType::MessageArguments, std::tuple<IPC::AsyncReplyID>>);
+
+#if ENABLE(IPC_TRACE)
+    if (UNLIKELY(IPC::Connection::ipcTracingEnabled()))
+        IPCTrace(MessageType::name(), decoder);
+#endif
 
     auto replyID = decoder.decode<Connection::AsyncReplyID>();
     if (UNLIKELY(!replyID))

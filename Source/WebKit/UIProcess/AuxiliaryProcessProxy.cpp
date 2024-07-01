@@ -126,6 +126,73 @@ void AuxiliaryProcessProxy::populateOverrideLanguagesLaunchOptions(ProcessLaunch
         LOG(Language, "overrideLanguages is still empty. Not setting WebProcess's launch OverrideLanguages.");
 }
 
+#if ENABLE(IPC_TRACE)
+static bool globalIPCTraceWebEnabled { false };
+static bool globalIPCTraceGPUEnabled  { false };
+static bool globalIPCTraceNetworkEnabled { false };
+static bool globalIPCTraceModelEnabled { false };
+
+bool AuxiliaryProcessProxy::ipcTraceEnabled(ProcessLauncher::ProcessType type)
+{
+#if PLATFORM(COCOA)
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        auto preferenceValue = adoptCF(CFPreferencesCopyValue(CFSTR("WebKitAllowIPCTraceUI"), kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+        if (preferenceValue.get() == kCFBooleanTrue) {
+            IPC::Connection::enableIPCTracing(); // set the global for UIProcess
+            RELEASE_LOG(IPCTrace, "IPC Trace Enabled for UI Process");
+        }
+        preferenceValue = adoptCF(CFPreferencesCopyValue(CFSTR("WebKitAllowIPCTraceWeb"), kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+        if (preferenceValue.get() == kCFBooleanTrue) {
+            globalIPCTraceWebEnabled = true;
+            RELEASE_LOG(IPCTrace, "IPC Trace Enabled for WebContent Process");
+        }
+        preferenceValue = adoptCF(CFPreferencesCopyValue(CFSTR("WebKitAllowIPCTraceGPU"), kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+        if (preferenceValue.get() == kCFBooleanTrue) {
+            globalIPCTraceGPUEnabled = true;
+            RELEASE_LOG(IPCTrace, "IPC Trace Enabled for GPU Process");
+        }
+        preferenceValue = adoptCF(CFPreferencesCopyValue(CFSTR("WebKitAllowIPCTraceNetwork"), kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+        if (preferenceValue.get() == kCFBooleanTrue) {
+            globalIPCTraceNetworkEnabled = true;
+            RELEASE_LOG(IPCTrace, "IPC Trace Enabled for Network Process");
+        }
+        preferenceValue = adoptCF(CFPreferencesCopyValue(CFSTR("WebKitAllowIPCTraceModel"), kCFPreferencesAnyApplication, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+        if (preferenceValue.get() == kCFBooleanTrue) {
+            globalIPCTraceModelEnabled = true;
+            RELEASE_LOG(IPCTrace, "IPC Trace Enabled for Model Process");
+        }
+    });
+
+    switch (type) {
+    case ProcessLauncher::ProcessType::Web:
+        return globalIPCTraceWebEnabled;
+        break;
+    case ProcessLauncher::ProcessType::Network:
+        return globalIPCTraceNetworkEnabled;
+        break;
+#if ENABLE(GPU_PROCESS)
+    case ProcessLauncher::ProcessType::GPU:
+        return globalIPCTraceGPUEnabled;
+        break;
+#endif // ENABLE(GPU_PROCESS)
+#if ENABLE(MODEL_PROCESS)
+    case ProcessLauncher::ProcessType::Model:
+        return globalIPCTraceModelEnabled;
+        break;
+#endif // ENABLE(MODEL_PROCESS)
+#if ENABLE(BUBBLEWRAP_SANDBOX)
+    case ProcessLauncher::ProcessType::DBusProxy:
+        return false
+        break;
+#endif // ENABLE(BUBBLEWRAP_SANDBOX)
+    }
+#else // !PLATFORM(COCOA)
+    return false;
+#endif
+}
+#endif // ENABLE(IPC_TRACE)
+
 void AuxiliaryProcessProxy::getLaunchOptions(ProcessLauncher::LaunchOptions& launchOptions)
 {
     launchOptions.processIdentifier = m_processIdentifier;
@@ -137,6 +204,11 @@ void AuxiliaryProcessProxy::getLaunchOptions(ProcessLauncher::LaunchOptions& lau
 
     if (m_alwaysRunsAtBackgroundPriority)
         launchOptions.extraInitializationData.add<HashTranslatorASCIILiteral>("always-runs-at-background-priority"_s, "true"_s);
+
+#if ENABLE(IPC_TRACE)
+    if (ipcTraceEnabled(launchOptions.processType))
+        launchOptions.extraInitializationData.add<HashTranslatorASCIILiteral>("ipc-tracing-enabled"_s, "true"_s);
+#endif
 
 #if ENABLE(DEVELOPER_MODE) && (PLATFORM(GTK) || PLATFORM(WPE))
     const char* varname;
