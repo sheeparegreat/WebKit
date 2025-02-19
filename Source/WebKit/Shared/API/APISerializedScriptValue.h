@@ -31,6 +31,7 @@
 #include <WebCore/CryptoKey.h>
 #include <WebCore/SerializedScriptValue.h>
 #include <wtf/RefPtr.h>
+#include <wtf/RuntimeApplicationChecks.h>
 
 #if USE(GLIB)
 #include <wtf/glib/GRefPtr.h>
@@ -64,6 +65,15 @@ public:
         return adoptRef(*new SerializedScriptValue(WebCore::SerializedScriptValue::createFromWireBytes(Vector<uint8_t>(buffer))));
     }
     
+    static Ref<SerializedScriptValue> createFromWireBytes(std::span<const uint8_t> buffer, WebCore::SerializationTypeFilter filter)
+    {
+        bool typesAreLimited = filter != WebCore::SerializationTypeFilter::None;
+        bool typesAppropriatelyRestricted = !isInAuxiliaryProcess() ? typesAreLimited : true;
+        RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(typesAppropriatelyRestricted);
+
+        return adoptRef(*new SerializedScriptValue(WebCore::SerializedScriptValue::createFromWireBytes(Vector<uint8_t>(buffer), filter)));
+    }
+
     JSValueRef deserialize(JSContextRef context, JSValueRef* exception)
     {
         return m_serializedScriptValue->deserialize(context, exception);

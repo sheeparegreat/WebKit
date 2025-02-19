@@ -7971,6 +7971,7 @@ headers: <JavaScriptCore/WasmModule.h> <WebCore/ImageBitmap.h> <WebCore/MessageP
 #endif
     [NotSerialized] Vector<WebCore::URLKeepingBlobAlive> blobHandles;
     [NotSerialized] size_t memoryCost;
+    [NotSerialized] WebCore::SerializationTypeFilter filter;
 };
 
 [RefCounted] class WebCore::SerializedScriptValue {

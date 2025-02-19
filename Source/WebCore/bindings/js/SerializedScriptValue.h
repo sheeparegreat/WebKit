@@ -83,6 +83,7 @@ enum class SerializationReturnCode;
 enum class SerializationErrorMode { NonThrowing, Throwing };
 enum class SerializationContext { Default, WorkerPostMessage, WindowPostMessage, CloneAcrossWorlds };
 enum class SerializationForStorage : bool { No, Yes };
+enum class SerializationTypeFilter : bool { None, NSObjectTypes };
 
 using ArrayBufferContentsArray = Vector<JSC::ArrayBufferContents>;
 #if ENABLE(WEBASSEMBLY)
@@ -106,7 +107,7 @@ class SerializedScriptValue : public ThreadSafeRefCounted<SerializedScriptValue>
     WTF_MAKE_FAST_ALLOCATED_WITH_HEAP_IDENTIFIER(SerializedScriptValue);
 public:
     WEBCORE_EXPORT static ExceptionOr<Ref<SerializedScriptValue>> create(JSC::JSGlobalObject&, JSC::JSValue, Vector<JSC::Strong<JSC::JSObject>>&& transfer, Vector<Ref<MessagePort>>&, SerializationForStorage = SerializationForStorage::No, SerializationContext = SerializationContext::Default);
-    WEBCORE_EXPORT static RefPtr<SerializedScriptValue> create(JSC::JSGlobalObject&, JSC::JSValue, SerializationForStorage = SerializationForStorage::No, SerializationErrorMode = SerializationErrorMode::Throwing, SerializationContext = SerializationContext::Default);
+    WEBCORE_EXPORT static RefPtr<SerializedScriptValue> create(JSC::JSGlobalObject&, JSC::JSValue, SerializationForStorage = SerializationForStorage::No, SerializationErrorMode = SerializationErrorMode::Throwing, SerializationContext = SerializationContext::Default, SerializationTypeFilter = SerializationTypeFilter::None);
     static RefPtr<SerializedScriptValue> convert(JSC::JSGlobalObject& globalObject, JSC::JSValue value) { return create(globalObject, value, SerializationForStorage::Yes); }
 
     WEBCORE_EXPORT static RefPtr<SerializedScriptValue> create(StringView);
@@ -120,7 +121,7 @@ public:
     WEBCORE_EXPORT String toString() const;
 
     // API implementation helpers. These don't expose special behavior for ArrayBuffers or MessagePorts.
-    WEBCORE_EXPORT static RefPtr<SerializedScriptValue> create(JSContextRef, JSValueRef, JSValueRef* exception);
+    WEBCORE_EXPORT static RefPtr<SerializedScriptValue> create(JSContextRef, JSValueRef, JSValueRef* exception, SerializationTypeFilter = SerializationTypeFilter::None);
     WEBCORE_EXPORT JSValueRef deserialize(JSContextRef, JSValueRef* exception);
     WEBCORE_EXPORT static Vector<uint8_t> serializeCryptoKey(JSContextRef, const WebCore::CryptoKey&);
 
@@ -130,9 +131,9 @@ public:
     Vector<URLKeepingBlobAlive> blobHandles() const { return crossThreadCopy(m_internals.blobHandles); }
     void writeBlobsToDiskForIndexedDB(bool isEphemeral, CompletionHandler<void(IDBValue&&)>&&);
     IDBValue writeBlobsToDiskForIndexedDBSynchronously(bool isEphemeral);
-    static Ref<SerializedScriptValue> createFromWireBytes(Vector<uint8_t>&& data)
+    static Ref<SerializedScriptValue> createFromWireBytes(Vector<uint8_t>&& data, SerializationTypeFilter filter = SerializationTypeFilter::None)
     {
-        return adoptRef(*new SerializedScriptValue(WTFMove(data)));
+        return adoptRef(*new SerializedScriptValue(WTFMove(data), filter));
     }
     const Vector<uint8_t>& wireBytes() const { return m_internals.data; }
 
@@ -143,8 +144,8 @@ public:
 private:
     friend struct IPC::ArgumentCoder<SerializedScriptValue, void>;
 
-    static ExceptionOr<Ref<SerializedScriptValue>> create(JSC::JSGlobalObject&, JSC::JSValue, Vector<JSC::Strong<JSC::JSObject>>&& transfer, Vector<Ref<MessagePort>>&, SerializationForStorage, SerializationErrorMode, SerializationContext);
-    WEBCORE_EXPORT SerializedScriptValue(Vector<unsigned char>&&, std::unique_ptr<ArrayBufferContentsArray>&& = nullptr
+    static ExceptionOr<Ref<SerializedScriptValue>> create(JSC::JSGlobalObject&, JSC::JSValue, Vector<JSC::Strong<JSC::JSObject>>&& transfer, Vector<Ref<MessagePort>>&, SerializationForStorage, SerializationErrorMode, SerializationContext, SerializationTypeFilter = SerializationTypeFilter::None);
+    WEBCORE_EXPORT SerializedScriptValue(Vector<unsigned char>&&, SerializationTypeFilter filter = SerializationTypeFilter::None, std::unique_ptr<ArrayBufferContentsArray>&& = nullptr
 #if ENABLE(WEB_RTC)
         , Vector<std::unique_ptr<DetachedRTCDataChannel>>&& = { }
 #endif
@@ -222,6 +223,7 @@ private:
 #endif
         Vector<URLKeepingBlobAlive> blobHandles { };
         size_t memoryCost { 0 };
+        SerializationTypeFilter filter { SerializationTypeFilter::None };
     };
     friend struct IPC::ArgumentCoder<Internals, void>;
 
