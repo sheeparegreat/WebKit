@@ -32,8 +32,8 @@ messages -> TestWithStream Stream {
     void SendStringSync(String url) -> (int64_t returnValue) Synchronous
     void CallWithIdentifier() -> () CallWithReplyID
 #if PLATFORM(COCOA)
-    void SendMachSendRight(MachSendRight a1) NotStreamEncodable
-    void ReceiveMachSendRight() -> (MachSendRight r1) Synchronous NotStreamEncodableReply
-    void SendAndReceiveMachSendRight(MachSendRight a1) -> (MachSendRight r1) Synchronous NotStreamEncodable NotStreamEncodableReply
+    void SendMachSendRight(TestGenerationMachPort a1) NotStreamEncodable
+    void ReceiveMachSendRight() -> (TestGenerationMachPort r1) Synchronous NotStreamEncodableReply
+    void SendAndReceiveMachSendRight(TestGenerationMachPort a1) -> (TestGenerationMachPort r1) Synchronous NotStreamEncodable NotStreamEncodableReply
 #endif
 }

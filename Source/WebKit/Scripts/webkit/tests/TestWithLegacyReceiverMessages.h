@@ -38,7 +38,6 @@
 #include <utility>
 #include <wtf/Forward.h>
 #include <wtf/HashMap.h>
-#include <wtf/MachSendRight.h>
 #include <wtf/OptionSet.h>
 #include <wtf/RuntimeApplicationChecks.h>
 #include <wtf/ThreadSafeRefCounted.h>
@@ -562,7 +561,7 @@ private:
 #if PLATFORM(MAC)
 class DidCreateWebProcessConnection {
 public:
-    using Arguments = std::tuple<MachSendRight, OptionSet<WebKit::SelectionFlags>>;
+    using Arguments = std::tuple<TestGenerationMachPort, OptionSet<WebKit::SelectionFlags>>;
 
     static IPC::MessageName name() { return IPC::MessageName::TestWithLegacyReceiver_DidCreateWebProcessConnection; }
     static constexpr bool isSync = false;
@@ -570,8 +569,8 @@ public:
     static constexpr bool replyCanDispatchOutOfOrder = false;
     static constexpr bool deferSendingIfSuspended = false;
 
-    DidCreateWebProcessConnection(MachSendRight&& connectionIdentifier, const OptionSet<WebKit::SelectionFlags>& flags)
-        : m_connectionIdentifier(WTFMove(connectionIdentifier))
+    DidCreateWebProcessConnection(const TestGenerationMachPort& connectionIdentifier, const OptionSet<WebKit::SelectionFlags>& flags)
+        : m_connectionIdentifier(connectionIdentifier)
         , m_flags(flags)
     {
     }
@@ -579,12 +578,12 @@ public:
     template<typename Encoder>
     void encode(Encoder& encoder)
     {
-        encoder << WTFMove(m_connectionIdentifier);
+        SUPPRESS_FORWARD_DECL_ARG encoder << m_connectionIdentifier;
         SUPPRESS_FORWARD_DECL_ARG encoder << m_flags;
     }
 
 private:
-    MachSendRight&& m_connectionIdentifier;
+    SUPPRESS_FORWARD_DECL_MEMBER const TestGenerationMachPort& m_connectionIdentifier;
     SUPPRESS_FORWARD_DECL_MEMBER const OptionSet<WebKit::SelectionFlags>& m_flags;
 };
 #endif

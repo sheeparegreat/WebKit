@@ -50,9 +50,6 @@
 #include <utility> // NOLINT
 #include <wtf/HashMap.h> // NOLINT
 #if PLATFORM(MAC)
-#include <wtf/MachSendRight.h> // NOLINT
-#endif
-#if PLATFORM(MAC)
 #include <wtf/OptionSet.h> // NOLINT
 #endif
 #include <wtf/Vector.h> // NOLINT

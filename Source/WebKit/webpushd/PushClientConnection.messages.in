@@ -34,7 +34,7 @@ messages -> WebPushD::PushClientConnection NotUsingIPCConnection {
     InitializeConnection(WebKit::WebPushD::WebPushDaemonConnectionConfiguration configuration)
     InjectPushMessageForTesting(WebKit::WebPushD::PushMessageForTesting message) -> (String error)
     InjectEncryptedPushMessageForTesting(String encryptedMessage) -> (bool injected)
-    SubscribeToPushService(URL scopeURL, Vector<uint8_t> vapidPublicKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
+    SubscribeToPushService(URL scopeURL, WebPushPublicKeyOpaqueData vapidPublicKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
     UnsubscribeFromPushService(URL scopeURL, std::optional<WebCore::PushSubscriptionIdentifier> identifier) -> (Expected<bool, WebCore::ExceptionData> result)
     GetPushSubscription(URL scopeURL) -> (Expected<std::optional<WebCore::PushSubscriptionData>, WebCore::ExceptionData> result)
     GetPushPermissionState(WebCore::SecurityOriginData origin) -> (enum:uint8_t WebCore::PushPermissionState result)

@@ -26,7 +26,7 @@
     DispatchedTo=Networking
 ]
 messages -> NetworkSocketChannel {
-    SendString(std::span<const uint8_t> message) -> ()
-    SendData(std::span<const uint8_t> data) -> ()
+    SendString(NetworkSocketChannelOpaqueData message) -> ()
+    SendData(NetworkSocketChannelOpaqueData data) -> ()
     Close(int32_t code, String reason)
 }

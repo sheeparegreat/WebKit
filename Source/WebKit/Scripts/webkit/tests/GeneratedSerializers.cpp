@@ -25,6 +25,7 @@
 #include "config.h"
 #include "GeneratedSerializers.h"
 #include "GeneratedWebKitSecureCoding.h"
+#include <wtf/RuntimeApplicationChecks.h>
 
 #include "CommonHeader.h"
 #if ENABLE(TEST_FEATURE)

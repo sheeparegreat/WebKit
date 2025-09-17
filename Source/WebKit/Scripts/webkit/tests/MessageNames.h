@@ -52,23 +52,24 @@ enum class ReceiverName : uint8_t {
     , TestWithImageData = 8
     , TestWithLegacyReceiver = 9
     , TestWithMultiLineExtendedAttributes = 10
-    , TestWithSemaphore = 11
-    , TestWithSpanOfConst = 12
-    , TestWithStream = 13
-    , TestWithStreamBatched = 14
-    , TestWithStreamBuffer = 15
-    , TestWithStreamServerConnectionHandle = 16
-    , TestWithSuperclass = 17
-    , TestWithSuperclassAndWantsAsyncDispatch = 18
-    , TestWithSuperclassAndWantsDispatch = 19
-    , TestWithValidator = 20
-    , TestWithWantsAsyncDispatch = 21
-    , TestWithWantsDispatch = 22
-    , TestWithWantsDispatchNoSyncMessages = 23
-    , TestWithoutAttributes = 24
-    , TestWithoutUsingIPCConnection = 25
-    , IPC = 26
-    , Invalid = 27
+    , TestWithOpaqueTransports = 11
+    , TestWithSemaphore = 12
+    , TestWithSpanOfConst = 13
+    , TestWithStream = 14
+    , TestWithStreamBatched = 15
+    , TestWithStreamBuffer = 16
+    , TestWithStreamServerConnectionHandle = 17
+    , TestWithSuperclass = 18
+    , TestWithSuperclassAndWantsAsyncDispatch = 19
+    , TestWithSuperclassAndWantsDispatch = 20
+    , TestWithValidator = 21
+    , TestWithWantsAsyncDispatch = 22
+    , TestWithWantsDispatch = 23
+    , TestWithWantsDispatchNoSyncMessages = 24
+    , TestWithoutAttributes = 25
+    , TestWithoutUsingIPCConnection = 26
+    , IPC = 27
+    , Invalid = 28
 };
 
 enum class MessageName : uint16_t {
@@ -133,6 +134,10 @@ enum class MessageName : uint16_t {
     TestWithLegacyReceiver_TouchEvent,
 #endif
     TestWithMultiLineExtendedAttributes_AlwaysEnabled,
+    TestWithOpaqueTransports_HandlePort,
+    TestWithOpaqueTransports_HandleSpan,
+    TestWithOpaqueTransports_RenderBitmap,
+    TestWithOpaqueTransports_ThrowThisOverTheWall,
     TestWithSemaphore_ReceiveSemaphore,
     TestWithSemaphore_ReceiveSemaphoreReply,
     TestWithSemaphore_SendSemaphore,

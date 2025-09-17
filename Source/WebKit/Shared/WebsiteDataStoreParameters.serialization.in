@@ -23,7 +23,7 @@
 header: "WebsiteDataFetchOption.h"
 
 [RValue] struct WebKit::WebsiteDataStoreParameters {
-    Vector<uint8_t> uiProcessCookieStorageIdentifier;
+    CookieStorageIdentifierOpaqueData uiProcessCookieStorageIdentifier;
     WebKit::SandboxExtensionHandle cookieStoragePathExtensionHandle;
     WebKit::NetworkSessionCreationParameters networkSessionParameters;
 

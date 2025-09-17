@@ -26,6 +26,8 @@
 #include "config.h"
 #include "RemoteXRProjectionLayerProxy.h"
 
+#include <wtf/MachSendRight.h>
+
 #if ENABLE(GPU_PROCESS)
 
 #include "RemoteGPUProxy.h"
@@ -34,7 +36,6 @@
 #include <WebCore/ImageBuffer.h>
 #include <WebCore/PlatformXR.h>
 #include <WebCore/WebGPUTextureFormat.h>
-#include <wtf/MachSendRight.h>
 
 namespace WebKit::WebGPU {
 

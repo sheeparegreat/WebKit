@@ -24,6 +24,6 @@ header: "SharedFileHandle.h"
 
 [CustomHeader] class IPC::SharedFileHandle {
 #if PLATFORM(COCOA)
-    MachSendRight toMachSendRight();
+    SharedFileHandleMachPort toMachSendRight();
 #endif
 };

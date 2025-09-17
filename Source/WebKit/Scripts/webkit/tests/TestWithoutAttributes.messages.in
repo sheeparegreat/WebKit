@@ -68,7 +68,7 @@ messages -> TestWithoutAttributes {
     SetVideoLayerID(WebCore::PlatformLayerIdentifier videoLayerID)
 
 #if PLATFORM(MAC)
-    DidCreateWebProcessConnection(MachSendRight connectionIdentifier, OptionSet<WebKit::SelectionFlags> flags)
+    DidCreateWebProcessConnection(TestGenerationMachPort connectionIdentifier, OptionSet<WebKit::SelectionFlags> flags)
 #endif
 
 #if PLATFORM(MAC)

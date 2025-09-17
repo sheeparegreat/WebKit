@@ -47,7 +47,7 @@ header: "CoreIPCNSURLProtectionSpace.h"
     std::optional<WebKit::CoreIPCString> realm;
     WebCore::ProtectionSpace::AuthenticationScheme scheme;
     std::optional<WebKit::CoreIPCSecTrust> trust;
-    std::optional<Vector<WebKit::CoreIPCData>> distnames;
+    std::optional<URLProtectionSpaceOpaqueData> distnames;
 }
 
 [WebKitPlatform] class WebKit::CoreIPCNSURLProtectionSpace {

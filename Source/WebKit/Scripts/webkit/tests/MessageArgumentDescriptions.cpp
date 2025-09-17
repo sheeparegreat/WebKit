@@ -333,6 +333,14 @@ std::optional<JSC::JSValue> jsValueForArguments(JSC::JSGlobalObject* globalObjec
         return jsValueForDecodedMessage<MessageName::TestWithWantsDispatch_TestSyncMessage>(globalObject, decoder);
     case MessageName::TestWithWantsDispatchNoSyncMessages_TestMessage:
         return jsValueForDecodedMessage<MessageName::TestWithWantsDispatchNoSyncMessages_TestMessage>(globalObject, decoder);
+    case MessageName::TestWithOpaqueTransports_HandlePort:
+        return jsValueForDecodedMessage<MessageName::TestWithOpaqueTransports_HandlePort>(globalObject, decoder);
+    case MessageName::TestWithOpaqueTransports_HandleSpan:
+        return jsValueForDecodedMessage<MessageName::TestWithOpaqueTransports_HandleSpan>(globalObject, decoder);
+    case MessageName::TestWithOpaqueTransports_ThrowThisOverTheWall:
+        return jsValueForDecodedMessage<MessageName::TestWithOpaqueTransports_ThrowThisOverTheWall>(globalObject, decoder);
+    case MessageName::TestWithOpaqueTransports_RenderBitmap:
+        return jsValueForDecodedMessage<MessageName::TestWithOpaqueTransports_RenderBitmap>(globalObject, decoder);
     default:
         break;
     }
@@ -740,7 +748,7 @@ std::optional<Vector<ArgumentDescription>> messageArgumentDescriptions(MessageNa
 #if PLATFORM(MAC)
     case MessageName::TestWithLegacyReceiver_DidCreateWebProcessConnection:
         return Vector<ArgumentDescription> {
-            { "connectionIdentifier"_s, "MachSendRight"_s },
+            { "connectionIdentifier"_s, "TestGenerationMachPort"_s },
             { "flags"_s, "OptionSet<WebKit::SelectionFlags>"_s },
         };
     case MessageName::TestWithLegacyReceiver_InterpretKeyEvent:
@@ -869,7 +877,7 @@ std::optional<Vector<ArgumentDescription>> messageArgumentDescriptions(MessageNa
 #if PLATFORM(MAC)
     case MessageName::TestWithoutAttributes_DidCreateWebProcessConnection:
         return Vector<ArgumentDescription> {
-            { "connectionIdentifier"_s, "MachSendRight"_s },
+            { "connectionIdentifier"_s, "TestGenerationMachPort"_s },
             { "flags"_s, "OptionSet<WebKit::SelectionFlags>"_s },
         };
     case MessageName::TestWithoutAttributes_InterpretKeyEvent:
@@ -971,13 +979,13 @@ std::optional<Vector<ArgumentDescription>> messageArgumentDescriptions(MessageNa
 #if PLATFORM(COCOA)
     case MessageName::TestWithStream_SendMachSendRight:
         return Vector<ArgumentDescription> {
-            { "a1"_s, "MachSendRight"_s },
+            { "a1"_s, "TestGenerationMachPort"_s },
         };
     case MessageName::TestWithStream_ReceiveMachSendRight:
         return Vector<ArgumentDescription> { };
     case MessageName::TestWithStream_SendAndReceiveMachSendRight:
         return Vector<ArgumentDescription> {
-            { "a1"_s, "MachSendRight"_s },
+            { "a1"_s, "TestGenerationMachPort"_s },
         };
 #endif
     case MessageName::TestWithStream_SendStringAsyncReply:
@@ -1098,6 +1106,22 @@ std::optional<Vector<ArgumentDescription>> messageArgumentDescriptions(MessageNa
         return Vector<ArgumentDescription> {
             { "url"_s, "String"_s },
         };
+    case MessageName::TestWithOpaqueTransports_HandlePort:
+        return Vector<ArgumentDescription> {
+            { "port"_s, "TestGenerationMachPort"_s },
+        };
+    case MessageName::TestWithOpaqueTransports_HandleSpan:
+        return Vector<ArgumentDescription> {
+            { "data"_s, "ResumeDownloadOpaqueData"_s },
+        };
+    case MessageName::TestWithOpaqueTransports_ThrowThisOverTheWall:
+        return Vector<ArgumentDescription> {
+            { "probablyBad"_s, "SomethingElseParsesThisOpaqueData"_s },
+        };
+    case MessageName::TestWithOpaqueTransports_RenderBitmap:
+        return Vector<ArgumentDescription> {
+            { "pixels"_s, "PixelOpaqueData"_s },
+        };
     default:
         break;
     }
@@ -1194,11 +1218,11 @@ std::optional<Vector<ArgumentDescription>> messageReplyArgumentDescriptions(Mess
 #if PLATFORM(COCOA)
     case MessageName::TestWithStream_ReceiveMachSendRight:
         return Vector<ArgumentDescription> {
-            { "r1"_s, "MachSendRight"_s },
+            { "r1"_s, "TestGenerationMachPort"_s },
         };
     case MessageName::TestWithStream_SendAndReceiveMachSendRight:
         return Vector<ArgumentDescription> {
-            { "r1"_s, "MachSendRight"_s },
+            { "r1"_s, "TestGenerationMachPort"_s },
         };
 #endif
 #if ENABLE(TEST_FEATURE)

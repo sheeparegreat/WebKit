@@ -95,7 +95,7 @@ messages -> GPUProcess : AuxiliaryProcess {
     WebProcessConnectionCountForTesting() -> (uint64_t count)
 
 #if USE(EXTENSIONKIT)
-    ResolveBookmarkDataForCacheDirectory(std::span<const uint8_t> bookmarkData)
+    ResolveBookmarkDataForCacheDirectory(GPUProcessBookmarkOpaqueData bookmarkData)
 #endif
 #if ENABLE(WEBXR)
     WebXRPromptAccepted(std::optional<WebCore::ProcessIdentity> processIdentity) -> (bool accepted)

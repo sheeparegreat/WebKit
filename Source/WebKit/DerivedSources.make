@@ -351,6 +351,7 @@ GENERATE_MESSAGE_RECEIVER_SCRIPTS = \
     $(WebKit2)/Scripts/webkit/messages.py \
     $(WebKit2)/Scripts/webkit/model.py \
     $(WebKit2)/Scripts/webkit/parser.py \
+    $(WebKit2)/Scripts/webkit/opaque_types.py \
     $(WebKit2)/DerivedSources.make \
 #
 
@@ -745,6 +746,7 @@ SERIALIZATION_DESCRIPTION_FILES = \
 	Shared/NavigationActionData.serialization.in \
 	Shared/NetworkProcessConnectionParameters.serialization.in \
 	Shared/NodeHitTestResult.serialization.in \
+	Shared/OpaqueTransports.serialization.in \
 	Shared/Pasteboard.serialization.in \
 	Shared/PlatformPopupMenuData.serialization.in \
 	Shared/PolicyDecision.serialization.in \
@@ -971,7 +973,7 @@ GENERATED_SERIALIZERS_OUTPUT_FILES = \
 
 GENERATED_SERIALIZERS_OUTPUT_PATTERNS = $(call to-pattern, $(GENERATED_SERIALIZERS_OUTPUT_FILES))
 
-$(GENERATED_SERIALIZERS_OUTPUT_PATTERNS) : $(WebKit2)/Scripts/generate-serializers.py $(SERIALIZATION_DESCRIPTION_FILES) $(WebKit2)/DerivedSources.make $(WEBCORE_SERIALIZATION_DESCRIPTION_FILES_FULLPATH)
+$(GENERATED_SERIALIZERS_OUTPUT_PATTERNS) : $(WebKit2)/Scripts/generate-serializers.py $(SERIALIZATION_DESCRIPTION_FILES) $(WebKit2)/DerivedSources.make $(WEBCORE_SERIALIZATION_DESCRIPTION_FILES_FULLPATH) $(WebKit2)/Scripts/webkit/opaque_types.py
 	$(PYTHON) $(WebKit2)/Scripts/generate-serializers.py mm $(filter %.in,$^)
 
 EXTENSIONS_DIR = $(WebKit2)/WebProcess/Extensions

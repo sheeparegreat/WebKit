@@ -53,7 +53,7 @@ messages -> WebPageProxy {
     AccessibilityScreenToRootView(WebCore::IntPoint screenPoint) -> (WebCore::IntPoint windowPoint) Synchronous
     RootViewToAccessibilityScreen(WebCore::IntRect rect) -> (WebCore::IntRect screenFrame) Synchronous
 #if PLATFORM(IOS_FAMILY)
-    RelayAccessibilityNotification(String notificationName, std::span<const uint8_t> notificationData)
+    RelayAccessibilityNotification(String notificationName, RelayAccessibilityNotificationOpaqueData notificationData)
 #endif
     EnableAccessibilityForAllProcesses()
 
@@ -169,7 +169,7 @@ messages -> WebPageProxy {
     DidUpdateHistoryTitle(String title, String url, WebCore::FrameIdentifier frameID)
 
     # Custom representations
-    DidFinishLoadingDataForCustomContentProvider(String suggestedFilename, std::span<const uint8_t> data)
+    DidFinishLoadingDataForCustomContentProvider(String suggestedFilename, CustomContentProviderOpaqueData data)
 
     # Forms messages
     WillSubmitForm(struct WebKit::FrameInfoData frame, struct WebKit::FrameInfoData sourceFrame, Vector<std::pair<String, String>> textFieldValues, WebKit::UserData userData) -> ()
@@ -349,7 +349,7 @@ messages -> WebPageProxy {
     ExecuteSavedCommandBySelector(String selector) -> (bool handled) Synchronous
 
     # Remote accessibility messages
-    RegisterWebProcessAccessibilityToken(std::span<const uint8_t> data)
+    RegisterWebProcessAccessibilityToken(AccessibilityTokenOpaqueData data)
 
     # Speech messages
     GetIsSpeaking() -> (bool isSpeaking) Synchronous
@@ -437,8 +437,8 @@ messages -> WebPageProxy {
 
     DidUpdateActivityState() CanDispatchOutOfOrder
 
-    SerializeAndWrapCryptoKey(struct WebCore::CryptoKeyData key) -> (std::optional<Vector<uint8_t>> wrappedKey) Synchronous
-    UnwrapCryptoKey(struct WebCore::WrappedCryptoKey wrappedKey) -> (std::optional<Vector<uint8_t>> key) Synchronous
+    SerializeAndWrapCryptoKey(struct WebCore::CryptoKeyData key) -> (std::optional<CryptoKeyOpaqueData> wrappedKey) Synchronous
+    UnwrapCryptoKey(struct WebCore::WrappedCryptoKey wrappedKey) -> (std::optional<CryptoKeyOpaqueData> key) Synchronous
 
 #if ENABLE(TELEPHONE_NUMBER_DETECTION)
 #if PLATFORM(MAC)
@@ -512,7 +512,7 @@ messages -> WebPageProxy {
 
     StartURLSchemeTask(struct WebKit::URLSchemeTaskParameters parameters)
     StopURLSchemeTask(WebKit::WebURLSchemeHandlerIdentifier handlerIdentifier, WebCore::ResourceLoaderIdentifier taskIdentifier)
-    LoadSynchronousURLSchemeTask(struct WebKit::URLSchemeTaskParameters parameters) -> (WebCore::ResourceResponse response, WebCore::ResourceError error, Vector<uint8_t> data) Synchronous
+    LoadSynchronousURLSchemeTask(struct WebKit::URLSchemeTaskParameters parameters) -> (WebCore::ResourceResponse response, WebCore::ResourceError error, WebPageProxyURLSchemeTaskOpaqueData data) Synchronous
 
 #if ENABLE(DEVICE_ORIENTATION)
     [EnabledBy=DeviceOrientationPermissionAPIEnabled] ShouldAllowDeviceOrientationAndMotionAccess(WebCore::FrameIdentifier frameID, struct WebKit::FrameInfoData frameInfo, bool mayPrompt) -> (enum:uint8_t WebCore::DeviceOrientationOrMotionPermissionState permissionState)
@@ -601,7 +601,7 @@ messages -> WebPageProxy {
     [EnabledBy=ModelElementEnabled] ModelElementCreateRemotePreview(String uuid, WebCore::FloatSize size) -> (Expected<std::pair<String, uint32_t>, WebCore::ResourceError> result)
     [EnabledBy=ModelElementEnabled] ModelElementLoadRemotePreview(String uuid, URL url) -> (std::optional<WebCore::ResourceError> error)
     [EnabledBy=ModelElementEnabled] ModelElementDestroyRemotePreview(String uuid)
-    [EnabledBy=ModelElementEnabled] ModelElementSizeDidChange(String uuid, WebCore::FloatSize size) -> (Expected<MachSendRight, WebCore::ResourceError> result)
+    [EnabledBy=ModelElementEnabled] ModelElementSizeDidChange(String uuid, WebCore::FloatSize size) -> (Expected<ModelElementMachPort, WebCore::ResourceError> result)
     [EnabledBy=ModelElementEnabled] HandleMouseDownForModelElement(String uuid, WebCore::LayoutPoint flippedLocationInElement, MonotonicTime timestamp)
     [EnabledBy=ModelElementEnabled] HandleMouseMoveForModelElement(String uuid, WebCore::LayoutPoint flippedLocationInElement, MonotonicTime timestamp)
     [EnabledBy=ModelElementEnabled] HandleMouseUpForModelElement(String uuid, WebCore::LayoutPoint flippedLocationInElement, MonotonicTime timestamp)
@@ -652,7 +652,7 @@ messages -> WebPageProxy {
     [EnabledBy=SiteIsolationEnabled] FrameTextForTesting(WebCore::FrameIdentifier frameID) -> (String text) Synchronous
     [EnabledBy=SiteIsolationEnabled] LayerTreeAsTextForTesting(WebCore::FrameIdentifier identifier, uint64_t baseIndent, OptionSet<WebCore::LayerTreeAsTextOptions> options) -> (String layerTreeDump) Synchronous
     AddMessageToConsoleForTesting(String message) AllowedWhenWaitingForSyncReply
-    [EnabledBy=SiteIsolationEnabled] BindRemoteAccessibilityFrames(int processIdentifier, WebCore::FrameIdentifier frameID, Vector<uint8_t> dataToken) -> (Vector<uint8_t> token, int processIdentifier) Synchronous
+    [EnabledBy=SiteIsolationEnabled] BindRemoteAccessibilityFrames(int processIdentifier, WebCore::FrameIdentifier frameID, WebPageProxyBindRemoteDataTokenOpaqueData dataToken) -> (WebPageProxyBindRemoteDataTokenOpaqueData token, int processIdentifier) Synchronous
     [EnabledBy=SiteIsolationEnabled] UpdateRemoteFrameAccessibilityOffset(WebCore::FrameIdentifier frameID, WebCore::IntPoint offset)
     [EnabledBy=SiteIsolationEnabled] DocumentURLForConsoleLog(WebCore::FrameIdentifier frameID) -> (URL url)
     [EnabledBy=SiteIsolationEnabled] DrawFrameToSnapshot(WebCore::FrameIdentifier frameID, WebCore::IntRect rect, WebKit::RemoteSnapshotIdentifier snapshotIdentifier) -> (bool success)

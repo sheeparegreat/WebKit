@@ -32,6 +32,6 @@ header: <WebKit/SecItemRequestData.h>
 
 class WebKit::SecItemRequestData {
     WebKit::SecItemRequestData::Type type();
-    RetainPtr<CFDictionaryRef> m_queryDictionary;
-    RetainPtr<CFDictionaryRef> m_attributesToMatch;
+    SecItemRequestDataCFDictionaryRef m_queryDictionary;
+    SecItemRequestDataCFDictionaryRef m_attributesToMatch;
 };

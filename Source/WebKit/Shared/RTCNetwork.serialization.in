@@ -45,13 +45,13 @@ enum class WebKit::WebRTCNetwork::EcnMarking : int {
 [CustomHeader] struct WebKit::WebRTCNetwork::SocketAddress {
     uint16_t port;
     int scopeID;
-    Vector<char> hostname;
+    SocketHostnameOpaqueData hostname;
     std::optional<WebKit::WebRTCNetwork::IPAddress> ipAddress;
 };
 
 struct WebKit::RTCNetwork {
-    Vector<char> name;
-    Vector<char> description;
+    RTCNetworkOpaqueData name;
+    RTCNetworkOpaqueData description;
     WebKit::WebRTCNetwork::IPAddress prefix;
     int prefixLength;
     int type;

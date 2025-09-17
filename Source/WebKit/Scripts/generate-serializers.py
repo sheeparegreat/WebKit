@@ -28,6 +28,8 @@ import os
 import re
 import sys
 
+from webkit.opaque_types import is_opaque_type
+
 # Supported type attributes:
 #
 # AdditionalEncoder - generate serializers for StreamConnectionEncoder in addition to IPC::Encoder.
@@ -45,7 +47,13 @@ import sys
 # CustomEncoder - Only generate the decoder, not the encoder.
 # WebKitSecureCodingClass - For webkit_secure_coding declarations that need a custom way of establishing the Obj-C class to instantiate (e.g. softlinked frameworks)
 # Wrapper - use a wrapper class to get members and to construct for an external type
-#
+
+# Supported attributes for 'Opaque Data Type' alias statements in OpaqueTransports.serialization.in
+# SerializationPolicyViolation - Tracking information for the work to remove the violation or justification as to why it's not a security issue.
+# ProvenUnstructuredData - Attribute indicating data like pixel data which isn't complicated with low risk of handling problems
+# Legacy - Bootstrap attribute to progress towards documented reasons with the SerializationPolicyViolation='...' attribute.
+# NotDispatchableFromWebContent - If WebContent cannot send the data we don't need to be concerned. Verified with a RELEASE_ASSERT.
+
 # Supported member attributes:
 #
 # BitField - work around the need for http://wg21.link/P0572 and don't check that the serialization order matches the memory layout.
@@ -104,6 +112,8 @@ class SerializedType(object):
         self.disableMissingMemberCheck = False
         self.debug_decoding_failure = False
         self.generic_wrapper = None
+        self.serialization_policy_violation = None
+        self.can_webcontent_dispatch = True
         if attributes is not None:
             for attribute in attributes.split(', '):
                 if '=' in attribute:
@@ -255,6 +265,10 @@ class SerializedType(object):
         copied_type.dictionary_members = None
         return copied_type
 
+    def enforce_opaque_transports_usage(self):
+        for member in self.members:
+            if is_opaque_type(member.type):
+                raise Exception("ERROR: opaque transport type not allowed: " + self.name + "." + member.name + " -> " + member.type)
 
 class SerializedEnum(object):
     def __init__(self, namespace, name, underlying_type, valid_values, condition, attributes):
@@ -464,6 +478,46 @@ class UsingStatement(object):
         self.name = name
         self.alias_lines = alias_lines
         self.condition = condition
+
+    def enforce_opaque_transports_usage(self):
+        for alias_line in self.alias_lines:
+            if alias_line.strip().startswith('#'):
+                continue
+
+            cleaned_line = alias_line.strip().rstrip(',;')
+
+            # Support multi-line using statements
+            if not cleaned_line or cleaned_line in ['Variant<', '>']:
+                continue
+
+            if is_opaque_type(cleaned_line):
+                raise Exception(f"ERROR: opaque transport type not allowed in using statement: {self.name} : {cleaned_line}")
+
+
+class AliasStatement(object):
+    def __init__(self, name, alias, attributes, condition):
+        self.name = name
+        self.alias = alias
+        self.condition = condition
+        self.serialization_policy_violation = None
+        self.proven_unstructured = None
+        self.can_webcontent_dispatch = True
+        self.legacy = False
+        if attributes is not None:
+            for attribute in attributes.split(', '):
+                if '=' in attribute:
+                    key, value = attribute.split('=')
+                    if key == 'SerializationPolicyViolation':
+                        self.serialization_policy_violation = value
+                    elif key == 'ProvenUnstructuredData':
+                        self.proven_unstructured = value
+                else:
+                    if attribute == 'NotDispatchableFromWebContent':
+                        self.can_webcontent_dispatch = False
+                    elif attribute == 'Legacy':
+                        self.legacy = True
+        if self.can_webcontent_dispatch and not self.serialization_policy_violation and not self.proven_unstructured and not self.legacy:
+            raise Exception(f'Cannot create an alias statement which doesn\'t have an attribute justifying it\'s existance: [SerializationPolicyViolation|ProvenUnstructuredData|NotDispatchableFromWebContent] using {self.name} = {self.alias}')
 
 
 class ObjCWrappedType(object):
@@ -677,7 +731,7 @@ def generate_forward_declarations(serialized_types, serialized_enums, additional
     return result
 
 
-def generate_header(serialized_types, serialized_enums, additional_forward_declarations):
+def generate_header(serialized_types, serialized_enums, additional_forward_declarations, alias_statements):
     result = []
     result.append(_license_header)
     result.append('#pragma once')
@@ -718,6 +772,14 @@ def generate_header(serialized_types, serialized_enums, additional_forward_decla
             result.append('#endif')
     result.append('')
     result.append('} // namespace WTF')
+    result.append('')
+    for alias_statement in alias_statements:
+        if alias_statement.condition is not None:
+            result.append(f'#if {alias_statement.condition}')
+        result.append(f'using {alias_statement.name} = {alias_statement.alias};')
+        if alias_statement.condition is not None:
+            result.append('#endif')
+    result.append('')
     result.append('')
     return '\n'.join(result)
 
@@ -807,12 +869,19 @@ def encode_cf_type(type):
     return result
 
 
-def encode_type(type):
+def is_not_dispatchable_from_webcontent_alias(member_type, alias_statements):
+    for alias_statement in alias_statements:
+        if alias_statement.name == member_type and not alias_statement.can_webcontent_dispatch:
+            return True
+    return False
+
+
+def encode_type(type, alias_statements=None):
     if type.cf_type is not None:
         return encode_cf_type(type)
     result = []
     if type.parent_class is not None:
-        result = result + encode_type(type.parent_class)
+        result = result + encode_type(type.parent_class, alias_statements)
     for member in type.serialized_members():
         if member.condition is not None:
             result.append(f'#if {member.condition}')
@@ -826,12 +895,18 @@ def encode_type(type):
             result.append('        return;')
             result.append('    }')
         elif member.optional_tuple_bits():
+            if alias_statements and is_not_dispatchable_from_webcontent_alias(member.type, alias_statements):
+                result.append('    RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(!isInWebProcess());')
             result.append(f'    encoder << instance.{member.name};')
             bits_variable_name = member.name
         elif member.optional_tuple_bit() is not None:
             result.append(f'    if (instance.{bits_variable_name} & {member.optional_tuple_bit()})')
+            if alias_statements and is_not_dispatchable_from_webcontent_alias(member.type, alias_statements):
+                result.append('        RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(!isInWebProcess());')
             result.append(f'        encoder << instance.{member.name};')
         else:
+            if alias_statements and is_not_dispatchable_from_webcontent_alias(member.type, alias_statements):
+                result.append('    RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(!isInWebProcess());')
             if type.rvalue and '()' not in member.name:
                 if 'EncodeRequestBody' in member.attributes:
                     result.append(f'    RefPtr {member.name}Body = instance.{member.name}.httpBody();')
@@ -1023,7 +1098,7 @@ def construct_type(type, specialization, indentation):
     return result
 
 
-def generate_one_impl(type, template_argument, serialized_types):
+def generate_one_impl(type, template_argument, serialized_types, alias_statements=None):
     result = []
     name_with_template = type.namespace_and_name()
     if template_argument is not None:
@@ -1065,7 +1140,7 @@ def generate_one_impl(type, template_argument, serialized_types):
                 result.append(f'    auto instance = {type.generic_wrapper}({instanceArgName});')
         if not type.members_are_subclasses and type.cf_type is None:
             result = result + check_type_members(type, False)
-        result = result + encode_type(type)
+        result = result + encode_type(type, alias_statements)
         if type.members_are_subclasses:
             result.append('    ASSERT_NOT_REACHED();')
         result.append('}')
@@ -1113,12 +1188,23 @@ def generate_one_impl(type, template_argument, serialized_types):
     return result
 
 
-def generate_impl(serialized_types, serialized_enums, headers, generating_webkit_platform_impl, objc_wrapped_types):
+def generate_impl(serialized_types, serialized_enums, headers, generating_webkit_platform_impl, objc_wrapped_types, alias_statements=None):
     result = []
     result.append(_license_header)
     result.append('#include "config.h"')
     result.append('#include "GeneratedSerializers.h"')
     result.append('#include "GeneratedWebKitSecureCoding.h"')
+
+    # Add RuntimeApplicationChecks header if there are NotDispatchableFromWebContent aliases
+    has_restricted_aliases = False
+    if alias_statements:
+        for alias_statement in alias_statements:
+            if not alias_statement.can_webcontent_dispatch:
+                has_restricted_aliases = True
+                break
+    if has_restricted_aliases:
+        result.append('#include <wtf/RuntimeApplicationChecks.h>')
+
     result.append('')
     for header in headers:
         if header.webkit_platform != generating_webkit_platform_impl:
@@ -1189,9 +1275,9 @@ def generate_impl(serialized_types, serialized_enums, headers, generating_webkit
             continue
         if type.templates:
             for template in type.templates:
-                result.extend(generate_one_impl(type, template, serialized_types))
+                result.extend(generate_one_impl(type, template, serialized_types, alias_statements))
         else:
-            result.extend(generate_one_impl(type, None, serialized_types))
+            result.extend(generate_one_impl(type, None, serialized_types, alias_statements))
     result.append('} // namespace IPC')
     result.append('')
     result.append('namespace WTF {')
@@ -1285,7 +1371,7 @@ def generate_optional_tuple_type_info(type):
     return result
 
 
-def generate_one_serialized_type_info(type):
+def generate_one_serialized_type_info(type, alias_statements=None):
     result = []
     if type.condition is not None:
         result.append(f'#if {type.condition}')
@@ -1383,7 +1469,7 @@ def output_sorted_headers(sorted_headers):
     return result
 
 
-def generate_serialized_type_info(serialized_types, serialized_enums, headers, using_statements, objc_wrapped_types):
+def generate_serialized_type_info(serialized_types, serialized_enums, headers, using_statements, objc_wrapped_types, alias_statements):
     result = []
     result.append(_license_header)
     result.append('#include "config.h"')
@@ -1423,7 +1509,7 @@ def generate_serialized_type_info(serialized_types, serialized_enums, headers, u
     result.append('{')
     result.append('    return {')
     for type in serialized_types:
-        result.extend(generate_one_serialized_type_info(type))
+        result.extend(generate_one_serialized_type_info(type, alias_statements))
 
     for type in objc_wrapped_types:
         if type.condition is not None:
@@ -1449,6 +1535,16 @@ def generate_serialized_type_info(serialized_types, serialized_enums, headers, u
         result.append(f'            , "alias"_s }}')
         result.append('        } },')
         if using_statement.condition is not None:
+            result.append('#endif')
+    for alias_statement in alias_statements:
+        if alias_statement.condition is not None:
+            result.append(f'#if {alias_statement.condition}')
+        result.append(f'        {{ "{alias_statement.name}"_s, {{')
+        result.append(f'        {{')
+        result.append(f'            "{alias_statement.alias}"_s')
+        result.append(f'            , "alias"_s }}')
+        result.append('        } },')
+        if alias_statement.condition is not None:
             result.append('#endif')
     result.append('    };')
     result.append('}')
@@ -1511,6 +1607,7 @@ def parse_serialized_types(file):
     serialized_types = []
     serialized_enums = []
     using_statements = []
+    alias_statements = []
     objc_wrapped_types = []
     additional_forward_declarations = []
     headers = []
@@ -1696,6 +1793,14 @@ def parse_serialized_types(file):
         if match:
             using_statements.append(UsingStatement(match.groups()[0], [match.groups()[1]], type_condition))
             continue
+        match = re.search(r'(?:\[(.*?)\] )?alias (.*?) = ([^;]*)', line)
+        if match:
+            # match.group(1) will be None if brackets aren't present
+            bracket_content = match.group(1) if match.group(1) else None
+            alias_name = match.group(2)
+            alias_value = match.group(3)
+            alias_statements.append(AliasStatement(alias_name, alias_value, bracket_content, type_condition))
+            continue
         if underlying_type is not None:
             members.append(EnumMember(line.strip(' ,'), member_condition))
             continue
@@ -1740,7 +1845,7 @@ def parse_serialized_types(file):
                     dictionary_members.append(MemberVariable(member_type, member_name, member_condition, []))
                 else:
                     members.append(MemberVariable(member_type, member_name, member_condition, []))
-    return [serialized_types, serialized_enums, headers, using_statements, additional_forward_declarations, objc_wrapped_types]
+    return [serialized_types, serialized_enums, headers, using_statements, alias_statements, additional_forward_declarations, objc_wrapped_types]
 
 
 def generate_webkit_secure_coding_impl(serialized_types, headers):
@@ -1983,11 +2088,11 @@ def generate_webkit_secure_coding_header(serialized_types):
     result.append('')
     return '\n'.join(result)
 
-
 def main(argv):
     serialized_types = []
     serialized_enums = []
     using_statements = []
+    alias_statements = []
     objc_wrapped_types = []
     headers = []
     header_set = set()
@@ -1996,13 +2101,19 @@ def main(argv):
     file_extension = argv[1]
     for i in range(2, len(argv)):
         with open(argv[i]) as file:
-            new_types, new_enums, new_headers, new_using_statements, new_additional_forward_declarations, new_objc_wrapped_types = parse_serialized_types(file)
+            new_types, new_enums, new_headers, new_using_statements, new_alias_statements, new_additional_forward_declarations, new_objc_wrapped_types = parse_serialized_types(file)
             for type in new_types:
+                if "OpaqueTransports.serialization.in" not in file:
+                    type.enforce_opaque_transports_usage()
                 serialized_types.append(type)
             for enum in new_enums:
                 serialized_enums.append(enum)
             for using_statement in new_using_statements:
+                if "OpaqueTransports.serialization.in" not in file:
+                    using_statement.enforce_opaque_transports_usage()
                 using_statements.append(using_statement)
+            for alias_statement in new_alias_statements:
+                alias_statements.append(alias_statement)
             for header in new_headers:
                 header_set.add(header)
             for declaration in new_additional_forward_declarations:
@@ -2014,13 +2125,13 @@ def main(argv):
     serialized_types = resolve_inheritance(serialized_types)
 
     with open('GeneratedSerializers.h', "w+") as output:
-        output.write(generate_header(serialized_types, serialized_enums, additional_forward_declarations_list))
+        output.write(generate_header(serialized_types, serialized_enums, additional_forward_declarations_list, alias_statements))
     with open('GeneratedSerializers.%s' % file_extension, "w+") as output:
-        output.write(generate_impl(serialized_types, serialized_enums, headers, False, []))
+        output.write(generate_impl(serialized_types, serialized_enums, headers, False, [], alias_statements))
     with open('WebKitPlatformGeneratedSerializers.%s' % file_extension, "w+") as output:
-        output.write(generate_impl(serialized_types, serialized_enums, headers, True, objc_wrapped_types))
+        output.write(generate_impl(serialized_types, serialized_enums, headers, True, objc_wrapped_types, alias_statements))
     with open('SerializedTypeInfo.%s' % file_extension, "w+") as output:
-        output.write(generate_serialized_type_info(serialized_types, serialized_enums, headers, using_statements, objc_wrapped_types))
+        output.write(generate_serialized_type_info(serialized_types, serialized_enums, headers, using_statements, objc_wrapped_types, alias_statements))
     with open('GeneratedWebKitSecureCoding.h', "w+") as output:
         output.write(generate_webkit_secure_coding_header(serialized_types))
     with open('GeneratedWebKitSecureCoding.%s' % file_extension, "w+") as output:

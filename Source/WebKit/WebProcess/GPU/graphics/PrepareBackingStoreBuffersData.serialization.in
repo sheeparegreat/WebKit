@@ -43,11 +43,11 @@ header: "RemoteImageBufferSetIdentifier.h"
 
 header: "ImageBufferBackendHandle.h"
 #if ENABLE(RE_DYNAMIC_CONTENT_SCALING) && PLATFORM(COCOA)
-using WebKit::ImageBufferBackendHandle = Variant<WebCore::ShareableBitmapHandle, MachSendRight, WebCore::DynamicContentScalingDisplayList>
+using WebKit::ImageBufferBackendHandle = Variant<WebCore::ShareableBitmapHandle, ImageBufferMachPort, WebCore::DynamicContentScalingDisplayList>
 #endif
 
 #if !ENABLE(RE_DYNAMIC_CONTENT_SCALING) && PLATFORM(COCOA)
-using WebKit::ImageBufferBackendHandle = Variant<WebCore::ShareableBitmapHandle, MachSendRight>
+using WebKit::ImageBufferBackendHandle = Variant<WebCore::ShareableBitmapHandle, ImageBufferMachPort>
 #endif
 
 #if !PLATFORM(COCOA)

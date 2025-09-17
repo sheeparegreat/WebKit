@@ -29,9 +29,6 @@
 #include "Decoder.h" // NOLINT
 #include "HandleMessage.h" // NOLINT
 #include "TestWithStreamMessages.h" // NOLINT
-#if PLATFORM(COCOA)
-#include <wtf/MachSendRight.h> // NOLINT
-#endif
 #include <wtf/text/WTFString.h> // NOLINT
 
 #if ENABLE(IPC_TESTING_API)

@@ -54,6 +54,10 @@
 #include <wtf/Vector.h>
 #include <wtf/WeakPtr.h>
 
+#if PLATFORM(COCOA)
+#include <wtf/MachSendRightAnnotated.h>
+#endif
+
 #if ENABLE(ENCRYPTED_MEDIA)
 #include "RemoteCDMInstanceIdentifier.h"
 #include "RemoteCDMInstanceProxy.h"

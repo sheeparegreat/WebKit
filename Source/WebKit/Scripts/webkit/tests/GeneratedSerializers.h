@@ -445,3 +445,9 @@ template<> bool isValidEnum<EnumNamespace::InnerEnumType>(uint8_t);
 #endif
 
 } // namespace WTF
+
+using TestGenerationMachPort = MachSendRight;
+using ResumeDownloadOpaqueData = std::span<const uint8_t>;
+using PixelOpaqueData = std::span<const uint8_t>;
+using SomethingElseParsesThisOpaqueData = std::span<const uint8_t>;
+

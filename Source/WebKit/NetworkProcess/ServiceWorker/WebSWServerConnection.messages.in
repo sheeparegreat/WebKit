@@ -53,7 +53,7 @@ messages -> WebSWServerConnection {
     [EnabledBy=ServiceWorkersEnabled] SetThrottleState(bool isThrottleable)
     [EnabledBy=ServiceWorkersEnabled] StoreRegistrationsOnDisk() -> ()
 
-    [EnabledBy=PushAPIEnabled] SubscribeToPushService(WebCore::ServiceWorkerRegistrationIdentifier identifier, Vector<uint8_t> applicationServerKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
+    [EnabledBy=PushAPIEnabled] SubscribeToPushService(WebCore::ServiceWorkerRegistrationIdentifier identifier, ServiceWorkerServerKeyOpaqueData applicationServerKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
     [EnabledBy=PushAPIEnabled] UnsubscribeFromPushService(WebCore::ServiceWorkerRegistrationIdentifier serviceWorkerRegistrationIdentifier, WebCore::PushSubscriptionIdentifier pushSubscriptionIdentifier) -> (Expected<bool, WebCore::ExceptionData> result)
     [EnabledBy=PushAPIEnabled] GetPushSubscription(WebCore::ServiceWorkerRegistrationIdentifier identifier) -> (Expected<std::optional<WebCore::PushSubscriptionData>, WebCore::ExceptionData> result)
     [EnabledBy=PushAPIEnabled] GetPushPermissionState(WebCore::ServiceWorkerRegistrationIdentifier identifier) -> (Expected<uint8_t, WebCore::ExceptionData> result)

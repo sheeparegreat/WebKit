@@ -24,6 +24,6 @@
 header: "DDReplaceVertices.h"
 [AdditionalEncoder=StreamConnectionEncoder, CustomHeader] struct WebKit::DDModel::DDReplaceVertices : WebKit::DDModel::ObjectDescriptorBase {
     int32_t bufferIndex;
-    Vector<uint8_t> buffer;
+    DDReplaceVerticesOpaqueData buffer;
 };
 #endif

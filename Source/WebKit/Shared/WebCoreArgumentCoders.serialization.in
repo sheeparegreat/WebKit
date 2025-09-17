@@ -1465,7 +1465,7 @@ struct WebCore::WebCodecsEncodedVideoChunkData {
     WebCore::WebCodecsEncodedVideoChunkType type;
     int64_t timestamp;
     std::optional<uint64_t> duration;
-    Vector<uint8_t> buffer;
+    WebCodecChunkOpaqueData buffer;
 };
 #endif
 
@@ -1476,7 +1476,7 @@ struct WebCore::WebCodecsEncodedAudioChunkData {
     WebCore::WebCodecsEncodedAudioChunkType type;
     int64_t timestamp;
     std::optional<uint64_t> duration;
-    Vector<uint8_t> buffer;
+    WebCodecChunkOpaqueData buffer;
 };
 #endif
 
@@ -1507,7 +1507,7 @@ struct WebCore::NotificationData {
     std::optional<WebCore::ScriptExecutionContextIdentifier> contextIdentifier;
     PAL::SessionID sourceSession;
     MonotonicTime creationTime;
-    Vector<uint8_t> data;
+    NotificationOpaqueData data;
     std::optional<bool> silent;
 };
 
@@ -1519,9 +1519,9 @@ struct WebCore::PushSubscriptionData {
     Markable<WebCore::PushSubscriptionIdentifier> identifier;
     String endpoint;
     std::optional<WebCore::EpochTimeStamp> expirationTime;
-    Vector<uint8_t> serverVAPIDPublicKey;
-    Vector<uint8_t> clientECDHPublicKey;
-    Vector<uint8_t> sharedAuthenticationSecret;
+    PushSubscriptionOpaqueData serverVAPIDPublicKey;
+    PushSubscriptionOpaqueData clientECDHPublicKey;
+    PushSubscriptionOpaqueData sharedAuthenticationSecret;
 };
 
 [RefCounted] class WebCore::DeprecationReportBody {
@@ -2244,11 +2244,11 @@ enum class WebCore::MediaCaptureType : uint8_t {
 #if PLATFORM(COCOA) && ENABLE(GPU_PROCESS) && ENABLE(WEBGL)
 header: <WebCore/GraphicsContextGL.h>
 [CustomHeader, RValue] struct WebCore::GraphicsContextGLExternalImageSourceIOSurfaceHandle {
-    MachSendRight handle;
+    GraphicsContextIOSurfaceHandleMachPort handle;
 };
 
 [CustomHeader, RValue] struct WebCore::GraphicsContextGLExternalImageSourceMTLSharedTextureHandle {
-    MachSendRight handle;
+    GraphicsContextTextureHandleMachPort handle;
 };
 #endif // PLATFORM(COCOA) && ENABLE(GPU_PROCESS) && ENABLE(WEBGL)
 
@@ -2319,7 +2319,7 @@ header: <WebCore/VP9Utilities.h>
 }
 
 class WebCore::BlobPart {
-    Variant<Vector<uint8_t>, Ref<WebCore::SharedBuffer>, URL> m_dataOrURL;
+    Variant<BlobPartOpaqueData, Ref<WebCore::SharedBuffer>, URL> m_dataOrURL;
 };
 
 [WebKitPlatform] enum class WebCore::ColorSpace : uint8_t {
@@ -2436,7 +2436,7 @@ enum class WebCore::VideoCodecType : uint8_t {
 
 header: <WebCore/FormData.h>
 [CustomHeader] struct WebCore::FormDataElement {
-    Variant<Vector<uint8_t>, WebCore::FormDataElement::EncodedFileData, WebCore::FormDataElement::EncodedBlobData> data
+    Variant<FormDataElementOpaqueData, WebCore::FormDataElement::EncodedFileData, WebCore::FormDataElement::EncodedBlobData> data
 }
 
 [Nested] struct WebCore::FormDataElement::EncodedFileData {
@@ -2673,7 +2673,7 @@ class WebCore::CertificateInfo {
 #endif
 #if USE(CURL)
     int verificationError()
-    Vector<Vector<uint8_t>> certificateChain()
+    Vector<CertificateInfoOpaqueData> certificateChain()
 #endif
 #if USE(SOUP)
     GRefPtr<GTlsCertificate> certificate()
@@ -2704,7 +2704,7 @@ header: <wtf/MachSendRight.h>
     [Validator='!!m_handle && *m_handle'] UnixFileDescriptor m_handle;
 #endif
 #if OS(DARWIN)
-    [Validator='!!m_handle && *m_handle'] MachSendRight m_handle;
+    [Validator='!!m_handle && *m_handle'] SharedMemoryHandleMachPort m_handle;
 #endif
 #if OS(WINDOWS)
     [Validator='!!m_handle && *m_handle'] Win32Handle m_handle;
@@ -3070,7 +3070,7 @@ header: <WebCore/Pattern.h>
 
 header: <WebCore/ThreadSafeDataBuffer.h>
 [RefCounted, CustomHeader] class WebCore::ThreadSafeDataBufferImpl {
-    Vector<uint8_t> m_data;
+    ThreadSafeBufferOpaqueData m_data;
 };
 
 class WebCore::ThreadSafeDataBuffer {
@@ -3145,7 +3145,7 @@ struct WebCore::LengthPoint {
 }
 
 class WebCore::SVGPathByteStream {
-    Vector<unsigned char> bytes();
+    ThreadSafeBufferOpaqueData bytes();
 }
 
 header: <WebCore/StylePrimitiveNumericTypes.h>
@@ -4484,7 +4484,7 @@ struct WebCore::CookieRequestHeaderFieldProxy {
     Vector<WebCore::FormDataElement> m_elements;
     int64_t m_identifier;
     bool m_alwaysStream;
-    Vector<uint8_t> m_boundary;
+    FormOpaqueData m_boundary;
     [NotSerialized] std::optional<uint64_t> m_lengthInBytes;
 };
 
@@ -4637,7 +4637,7 @@ enum class WebCore::MediaDecodingType : uint8_t {
 enum class WebCore::MediaEncodingType : bool;
 
 class WebCore::BufferSource {
-    std::span<const uint8_t> span();
+    BufferSourceOpaqueData span();
 }
 
 struct WebCore::FontShadow {
@@ -5055,7 +5055,7 @@ enum class WebCore::PreserveResolution : bool;
 
 [RValue] class WebCore::ProcessIdentity {
 #if HAVE(TASK_IDENTITY_TOKEN)
-    MachSendRight m_taskIdToken;
+    ProcessIdentityMachPort m_taskIdToken;
 #endif
 };
 
@@ -6474,12 +6474,12 @@ enum class WebCore::DisplayCapturePromptType : uint8_t {
 
 header: <JavaScriptCore/ArrayBuffer.h>
 [RefCounted, CustomHeader] class JSC::ArrayBuffer {
-    Vector<uint8_t> toVector();
+    JSCArrayBufferOpaqueData toVector();
 }
 
 header: <JavaScriptCore/ArrayBuffer.h>
 [CustomHeader, CreateUsing=fromSpan] class JSC::ArrayBufferContents {
-    std::span<const uint8_t> span();
+    ArrayBufferContentsOpaqueData span();
 }
 
 enum class WebCore::TextIndicatorPresentationTransition : uint8_t {
@@ -7814,7 +7814,7 @@ struct WebCore::VideoConfiguration {
     std::optional<WebCore::TransferFunction> transferFunction;
 }
 
-using WebCore::FontTag = std::array<char, 4>;
+using WebCore::FontTag = FontTagOpaqueData;
 
 header: <WebCore/FontTaggedSettings.h>
 [Alias=class FontTaggedSetting<float>, CustomHeader] class WebCore::FloatFontTaggedSetting {
@@ -8064,14 +8064,14 @@ enum class WebCore::RepaintRectCalculation : bool;
 [RefCounted, AdditionalEncoder=StreamConnectionEncoder] class WebCore::ByteArrayPixelBuffer {
     WebCore::PixelBufferFormat format();
     WebCore::IntSize size();
-    std::span<const uint8_t> span();
+    ByteArrayPixelBufferOpaqueData span();
 };
 
 header: <WebCore/PixelBuffer.h>
 [AdditionalEncoder=StreamConnectionEncoder, CreateUsing=create, CustomHeader] class WebCore::PixelBufferSourceView {
     WebCore::PixelBufferFormat format();
     WebCore::IntSize size();
-    std::span<const uint8_t> bytes();
+    PixelBufferSourceViewOpaqueData bytes();
 };
 
 #if ENABLE(WEB_AUTHN)
@@ -8212,7 +8212,7 @@ header: <WebCore/WebCodecsEncodedAudioChunk.h>
 
 headers: <JavaScriptCore/WasmModule.h> <WebCore/ImageBitmap.h> <WebCore/MessagePort.h> <WebCore/OffscreenCanvas.h>
 [Nested] class WebCore::SerializedScriptValue::Internals {
-    Vector<uint8_t> data;
+    SerializedScriptValueOpaqueData data;
     std::unique_ptr<Vector<JSC::ArrayBufferContents>> arrayBufferContentsArray;
 #if ENABLE(WEB_RTC)
     Vector<std::unique_ptr<WebCore::DetachedRTCDataChannel>> detachedRTCDataChannels;
@@ -8538,7 +8538,7 @@ header: <WebCore/ShareableResource.h>
 #if ENABLE(RE_DYNAMIC_CONTENT_SCALING)
 [RValue] class WebCore::DynamicContentScalingDisplayList {
     Ref<WebCore::SharedBuffer> displayList();
-    Vector<MachSendRight> takeSurfaces();
+    Vector<DynamicContentMachPort> takeSurfaces();
 }
 
 enum class WebCore::IncludeDynamicContentScalingDisplayList : bool;
@@ -8611,7 +8611,7 @@ header: <WebCore/TextAttachmentForSerialization.h>
     bool ignoresOrientation;
 #endif
     String preferredFilename;
-    RetainPtr<CFDataRef> data;
+    TextAttachmentFileWrapperOpaqueData data;
     String accessibilityLabel;
 }
 
@@ -8628,7 +8628,7 @@ header: <WebCore/TextAttachmentForSerialization.h>
     String credit;
     String digitalSourceType;
     Vector<WebCore::MultiRepresentationHEICAttachmentSingleImage> images;
-    [NotSerialized] RetainPtr<CFDataRef> data;
+    [NotSerialized] HEICAttachmentDataOpaqueData data;
 }
 
 #endif
@@ -8893,14 +8893,14 @@ class WebCore::SerializedPlatformDataCueValue {
     HashMap<String, String> otherAttributes;
     String key;
     RetainPtr<NSLocale> locale;
-    Variant<std::nullptr_t, RetainPtr<NSString>, RetainPtr<NSDate>, RetainPtr<NSNumber>, RetainPtr<NSData>> value;
+    Variant<std::nullptr_t, RetainPtr<NSString>, RetainPtr<NSDate>, RetainPtr<NSNumber>, CueValueOpaqueData> value;
 #endif
 };
 #endif
 
 header: <WebCore/SharedBuffer.h>
 [RefCounted, CustomHeader, CreateUsing=fromIPCData] class WebCore::FragmentedSharedBuffer {
-    Variant<std::optional<WebCore::SharedMemoryHandle>, Vector<std::span<const uint8_t>>> toIPCData();
+    Variant<std::optional<WebCore::SharedMemoryHandle>, Vector<FragmentedBufferOpaqueData>> toIPCData();
 };
 
 header: <WebCore/TextFlags.h>
@@ -8930,7 +8930,7 @@ header: <WebCore/GraphicsContextGL.h>
 #endif
 #if PLATFORM(COCOA) && ENABLE(WEBGL)
 using WebCore::GraphicsContextGL::ExternalImageSource = Variant<WebCore::GraphicsContextGLExternalImageSourceIOSurfaceHandle, WebCore::GraphicsContextGLExternalImageSourceMTLSharedTextureHandle>
-using WebCore::GraphicsContextGL::ExternalSyncSource = std::tuple<MachSendRight, uint64_t>
+using WebCore::GraphicsContextGL::ExternalSyncSource = std::tuple<GraphicsContextGLMachPort, uint64_t>
 #endif
 #if !PLATFORM(COCOA) && ENABLE(WEBGL)
 #if (PLATFORM(GTK) || PLATFORM(WPE))
@@ -9046,9 +9046,9 @@ enum class WebCore::CrossOriginMode : bool
 };
 
 struct WebCore::WrappedCryptoKey {
-    std::array<uint8_t, 24> wrappedKEK;
-    Vector<uint8_t> encryptedKey;
-    std::array<uint8_t, 16> tag;
+    WrappedCryptoKeyKEKOpaqueData wrappedKEK;
+    CryptoKeyOpaqueData encryptedKey;
+    WrappedCryptoKeyTagOpaqueData tag;
 };
 
 #if PLATFORM(IOS_FAMILY)
@@ -9250,7 +9250,7 @@ struct WebCore::CryptoKeyData {
     WebCore::CryptoAlgorithmIdentifier algorithmIdentifier;
     bool extractable;
     int usages;
-    std::optional<Vector<uint8_t>> key;
+    std::optional<CryptoKeyOpaqueData> key;
     std::optional<WebCore::JsonWebKey> jwk;
     std::optional<WebCore::CryptoAlgorithmIdentifier> hashAlgorithmIdentifier;
     std::optional<String> namedCurveString;
@@ -9392,7 +9392,7 @@ struct WebCore::MessageForTesting {
 struct WebCore::HostingContext {
     uint32_t contextID;
 #if ENABLE(MACH_PORT_LAYER_HOSTING)
-    WTF::MachSendRightAnnotated sendRightAnnotated;
+    HostingContextMachSendRightAnnotated sendRightAnnotated;
 #endif
 }
 

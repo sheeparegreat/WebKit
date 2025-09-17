@@ -89,6 +89,10 @@ const MessageDescriptionsArray messageDescriptions {
     MessageDescription { "TestWithLegacyReceiver_TouchEvent"_s, ReceiverName::TestWithLegacyReceiver, false, false, false, ProcessName::Unknown, ProcessName::Unknown },
 #endif
     MessageDescription { "TestWithMultiLineExtendedAttributes_AlwaysEnabled"_s, ReceiverName::TestWithMultiLineExtendedAttributes, false, false, false, ProcessName::GPU, ProcessName::WebContent },
+    MessageDescription { "TestWithOpaqueTransports_HandlePort"_s, ReceiverName::TestWithOpaqueTransports, false, false, false, ProcessName::Networking, ProcessName::UI },
+    MessageDescription { "TestWithOpaqueTransports_HandleSpan"_s, ReceiverName::TestWithOpaqueTransports, false, false, false, ProcessName::Networking, ProcessName::UI },
+    MessageDescription { "TestWithOpaqueTransports_RenderBitmap"_s, ReceiverName::TestWithOpaqueTransports, false, false, false, ProcessName::Networking, ProcessName::UI },
+    MessageDescription { "TestWithOpaqueTransports_ThrowThisOverTheWall"_s, ReceiverName::TestWithOpaqueTransports, false, false, false, ProcessName::Networking, ProcessName::UI },
     MessageDescription { "TestWithSemaphore_ReceiveSemaphore"_s, ReceiverName::TestWithSemaphore, false, false, false, ProcessName::Unknown, ProcessName::Unknown },
     MessageDescription { "TestWithSemaphore_ReceiveSemaphoreReply"_s, ReceiverName::TestWithSemaphore, false, false, true, ProcessName::Unknown, ProcessName::Unknown },
     MessageDescription { "TestWithSemaphore_SendSemaphore"_s, ReceiverName::TestWithSemaphore, false, false, false, ProcessName::Unknown, ProcessName::Unknown },

@@ -39,7 +39,7 @@ messages -> NetworkRTCProvider {
     GetInterfaceName(URL url, WebKit::WebPageProxyIdentifier pageIdentifier, bool isFirstParty, bool isRelayDisabled, WebCore::RegistrableDomain domain) -> (String interfaceName) async
 #endif
 
-    SendToSocket(WebCore::LibWebRTCSocketIdentifier identifier, std::span<const uint8_t> data, WebKit::WebRTCNetwork::SocketAddress address, struct WebKit::RTCPacketOptions options)
+    SendToSocket(WebCore::LibWebRTCSocketIdentifier identifier, WebRTCOpaqueData data, WebKit::WebRTCNetwork::SocketAddress address, struct WebKit::RTCPacketOptions options)
     CloseSocket(WebCore::LibWebRTCSocketIdentifier identifier)
     SetSocketOption(WebCore::LibWebRTCSocketIdentifier identifier, int option, int value)
 }

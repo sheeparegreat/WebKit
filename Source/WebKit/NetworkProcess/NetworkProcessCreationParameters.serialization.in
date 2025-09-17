@@ -28,7 +28,7 @@ headers: "NetworkProcessCreationParameters.h" "AuxiliaryProcessCreationParameter
     WebKit::CacheModel cacheModel
 
 #if PLATFORM(MAC) || PLATFORM(MACCATALYST)
-    Vector<uint8_t> uiProcessCookieStorageIdentifier
+    CookieStorageIdentifierOpaqueData uiProcessCookieStorageIdentifier
 #endif
     bool shouldSuppressMemoryPressureHandler
 
@@ -36,7 +36,7 @@ headers: "NetworkProcessCreationParameters.h" "AuxiliaryProcessCreationParameter
 
 #if PLATFORM(COCOA)
     String uiProcessBundleIdentifier
-    RetainPtr<CFDataRef> networkATSContext
+    NetworkCreationOpaqueData networkATSContext
     bool isParentProcessFullWebBrowserOrRunningTest
 #endif
 

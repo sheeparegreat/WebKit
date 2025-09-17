@@ -35,7 +35,7 @@ secure_coding_header: <pal/cocoa/PassKitSoftLink.h>
 
 webkit_platform_headers: "CoreIPCPKSecureElementPass.h"
 [WebKitPlatform] class WebKit::CoreIPCPKSecureElementPass {
-    Vector<uint8_t> ipcData()
+    CoreIPCPKSecureElementPassOpaqueData ipcData()
 }
 
 [WebKitSecureCodingClass=PAL::getPKPaymentMerchantSessionClassSingleton(), SupportWKKeyedCoder, WebKitPlatform] webkit_secure_coding PKPaymentMerchantSession {

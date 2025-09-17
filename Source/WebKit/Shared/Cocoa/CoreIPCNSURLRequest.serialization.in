@@ -93,7 +93,7 @@ header: "CoreIPCNSURLRequest.h"
     ShouldStartSynchronously
 };
 
-using WebKit::CoreIPCNSURLRequestData::BodyParts = Variant<WebKit::CoreIPCString, WebKit::CoreIPCData>;
+using WebKit::CoreIPCNSURLRequestData::BodyParts = Variant<WebKit::CoreIPCString, BodyPartOpaqueData>;
 using WebKit::CoreIPCNSURLRequestData::HeaderField = std::pair<String, Variant<String, Vector<String>>>;
 
 header: "CoreIPCNSURLRequest.h"
@@ -115,7 +115,7 @@ header: "CoreIPCNSURLRequest.h"
     std::optional<bool> isHTTP;
     std::optional<WebKit::CoreIPCString> httpMethod;
     std::optional<Vector<WebKit::CoreIPCNSURLRequestData::HeaderField>> headerFields;
-    std::optional<WebKit::CoreIPCData> body;
+    std::optional<URLRequestOpaqueData> body;
     std::optional<Vector<WebKit::CoreIPCNSURLRequestData::BodyParts>> bodyParts;
 
     double startTimeoutTime;

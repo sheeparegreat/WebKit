@@ -35,7 +35,7 @@ messages -> DrawingArea {
     DisplayDidRefresh()
 
 #if PLATFORM(COCOA)
-    UpdateGeometry(WebCore::IntSize viewSize, bool flushSynchronously, MachSendRight fencePort) -> ()
+    UpdateGeometry(WebCore::IntSize viewSize, bool flushSynchronously, DrawingAreaMachPort fencePort) -> ()
     SetColorSpace(struct std::optional<WebCore::DestinationColorSpace> colorSpace)
     SetViewExposedRect(std::optional<WebCore::FloatRect> viewExposedRect)
 

@@ -49,7 +49,7 @@ header: <WebCore/FontPlatformData.h>
     LOGFONT m_font;
 #endif
 #if USE(CORE_TEXT)
-    RetainPtr<CFDictionaryRef> m_attributes;
+    FontPlatformDataAttributesCFDictionaryRef m_attributes;
     CTFontDescriptorOptions m_options;
     RetainPtr<CFStringRef> m_url;
     RetainPtr<CFStringRef> m_psName;

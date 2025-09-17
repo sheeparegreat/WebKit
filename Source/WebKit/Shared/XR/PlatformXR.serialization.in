@@ -125,14 +125,14 @@ header: <WebCore/PlatformXR.h>
     std::array<WebCore::IntRect, 2> viewports;
     PlatformXR::RateMapDescription foveationRateMapDesc;
 #if PLATFORM(COCOA)
-    MachSendRight completionSyncEvent;
+    LayerSetupDataMachPort completionSyncEvent;
 #endif
 };
 
 #if !OS(ANDROID)
 [Nested, RValue] struct PlatformXR::FrameData::ExternalTexture {
 #if PLATFORM(COCOA)
-    MachSendRight handle;
+    PlatformXRExternalTextureMachPort handle;
     bool isSharedTexture;
 #endif
 #if !PLATFORM(COCOA)

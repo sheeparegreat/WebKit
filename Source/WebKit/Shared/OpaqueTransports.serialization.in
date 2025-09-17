@@ -1,0 +1,255 @@
+# Copyright (C) 2025 Apple Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1.  Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+# 2.  Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY APPLE INC. AND ITS CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL APPLE INC. OR ITS CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+[SerializationPolicyViolation='rdar://160898631 Adopt NotDispatchableFromWebContent'] alias APIDataOpaqueData = std::span<const uint8_t>;
+
+[Legacy] alias FragmentedBufferOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LoggingOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WebRTCOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CoreIPCCFCharacterSetOpaqueData = std::span<const uint8_t>;
+[Legacy] alias SerializableDataOpaqueData = std::span<const char>;
+[Legacy] alias CStringOpaqueData = std::span<const char>;
+[Legacy] alias BufferSourceOpaqueData = std::span<const uint8_t>;
+[Legacy] alias ArrayBufferContentsOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WrappedCryptoKeyKEKOpaqueData = std::array<uint8_t, 24>;
+[Legacy] alias WrappedCryptoKeyTagOpaqueData = std::array<uint8_t, 16>;
+[Legacy] alias SaltOpaqueData = std::array<uint8_t, 8>;
+[Legacy] alias FontTagOpaqueData = std::array<char, 4>;
+[Legacy] alias CoreIPCSecAccessControlOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CoreIPCSecCertificateOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CoreIPCSecKeychainItemOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LegacyCustomProtocolManagerOpaqueData = std::span<const uint8_t>;
+[Legacy] alias NetworkSocketChannelOpaqueData = std::span<const uint8_t>;
+[Legacy] alias PublishDownloadProgressOpaqueData = std::span<const uint8_t>;
+[Legacy] alias RTCDataChannelRemoteManagerProxyOpaqueData = std::span<const uint8_t>;
+[Legacy] alias NetworkTransportSessionOpaqueData = std::span<const uint8_t>;
+[Legacy] alias ExecuteCommandForWritableOpaqueData = std::span<const uint8_t>;
+[Legacy] alias DataTaskDidReceiveDataOpaqueData = std::span<const uint8_t>;
+[Legacy] alias RelayAccessibilityNotificationOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CustomContentProviderOpaqueData = std::span<const uint8_t>;
+[Legacy] alias AccessibilityTokenOpaqueData = std::span<const uint8_t>;
+[Legacy] alias DownloadProxyBookmarkOpaqueData = std::span<const uint8_t>;
+[Legacy] alias DownloadProxyDecideDestinationOpaqueData = std::span<const uint8_t>;
+[Legacy] alias DownloadProxyDidFailResumeOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LibWebRTCCodecsOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CueOpaqueData = std::span<const uint8_t>;
+[Legacy] alias EncryptedMediaOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WebSocketChannelOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WebTransportSessionOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LibWebRTCNetworkOpaqueData = std::span<const uint8_t>;
+[Legacy] alias RTCOpaqueData = std::span<const uint8_t>;
+[Legacy] alias BindAccessibilityOpaqueData = std::span<const uint8_t>;
+[Legacy] alias InjectedBundleOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WebPageLoadOpaqueData = std::span<const uint8_t>;
+[Legacy] alias GPUProcessBookmarkOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LibWebRTCCodecsProxyFormatDescriptionOpaqueData = std::span<const uint8_t>;
+[Legacy] alias LibWebRTCCodecsProxyDecodeFrameOpaqueData = std::span<const uint8_t>;
+[Legacy] alias RemoteGraphicsContextGLOpaqueData = std::span<const uint8_t>;
+[Legacy] alias CoreIPCDataOpaqueData = std::span<const uint8_t>;
+[Legacy] alias PushEvenOpaqueData = std::span<const uint8_t>;
+#if PLATFORM(IOS_FAMILY)
+[Legacy] alias WebPageIconOpaqueDate = std::span<const uint8_t>;
+#endif
+#if PLATFORM(COCOA)
+[Legacy] alias WebPageAccessibilityOpaqueData = std::span<const uint8_t>;
+[Legacy] alias WebPagePasteboardOpaqueData = std::span<const uint8_t>;
+#endif
+#if ENABLE(MULTI_REPRESENTATION_HEIC)
+[Legacy] alias WebPageHEICOpaqueData = std::span<const uint8_t>;
+#endif
+#if ENABLE(IMAGE_ANALYSIS_ENHANCEMENTS)
+[Legacy] alias WebPageReplaceImageOpaqueData = std::span<const uint8_t>;
+#endif
+#if ENABLE(PDF_PLUGIN) && PLATFORM(MAC)
+[Legacy] alias WebPageOpaquePDFData = std::span<const uint8_t>;
+#endif
+#if !HAVE(WK_SECURE_CODING_SECTRUST)
+[Legacy] alias CoreIPCSecTrustOpaqueData = std::span<const uint8_t>;
+#endif
+
+[ProvenUnstructuredData='Pixel buffer data'] alias RemoteGraphicsContextGLPixelOpaqueData = std::span<const uint8_t>;
+[ProvenUnstructuredData='Pixel buffer data'] alias ByteArrayPixelBufferOpaqueData = std::span<const uint8_t>;
+[ProvenUnstructuredData='Pixel buffer data'] alias PixelBufferSourceViewOpaqueData = std::span<const uint8_t>;
+
+#if ENABLE(SANDBOX_EXTENSIONS)
+[Legacy] alias SandboxExtensionImpOpaqueData = std::span<const uint8_t>;
+#endif
+
+[Legacy] alias FixedVectorOpaqueData = FixedVector<uint8_t>;
+
+[Legacy] alias DDReplaceVerticesOpaqueData = Vector<uint8_t>;
+[Legacy] alias DDUpdateMeshOpaqueData = Vector<uint8_t>;
+[Legacy] alias FormDataElementOpaqueData = Vector<uint8_t>;
+[Legacy] alias BlobPartOpaqueData = Vector<uint8_t>;
+[Legacy] alias StateObjectOpaqueData = Vector<uint8_t>;
+[Legacy] alias NetworkConnectionLoadOpaqueData = Vector<uint8_t>;
+[Legacy] alias NetworkConnectionServerKeyOpaqueData = Vector<uint8_t>;
+[Legacy] alias ServiceWorkerServerKeyOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPageProxyURLSchemeTaskOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPageProxyBindRemoteDataTokenOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPageBindRemoteDataTokenOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPageImageOpaqueData = Vector<uint8_t>;
+[Legacy] alias GPURemoteQueueBufferOpaqueData = Vector<uint8_t>;
+[Legacy] alias GPURemoteQueueTextureOpaqueData = Vector<uint8_t>;
+[Legacy] alias GPURemoteBufferOpaqueData = Vector<uint8_t>;
+[Legacy] alias CookieStorageIdentifierOpaqueData = Vector<uint8_t>;
+[Legacy] alias CryptoKeyOpaqueData = Vector<uint8_t>;
+[Legacy] alias CoreIPCCFURLOpaqueData = Vector<uint8_t>;
+[Legacy] alias CoreIPCPKSecureElementPassOpaqueData = Vector<uint8_t>;
+[Legacy] alias FontPlatformOpaqueData = Vector<uint8_t>;
+[Legacy] alias NotificationOpaqueData = Vector<uint8_t>;
+[Legacy] alias PushSubscriptionOpaqueData = Vector<uint8_t>;
+[Legacy] alias CertificateInfoOpaqueData = Vector<uint8_t>;
+[Legacy] alias ThreadSafeBufferOpaqueData = Vector<uint8_t>;
+[Legacy] alias FormOpaqueData = Vector<uint8_t>;
+[Legacy] alias JSCArrayBufferOpaqueData = Vector<uint8_t>;
+[Legacy] alias SerializedScriptValueOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPushAppAuditTokenOpaqueData = Vector<uint8_t>;
+[Legacy] alias WebPushOpaqueData = Vector<uint8_t>;
+[Legacy] alias ProxyConfigOpaqueData = Vector<uint8_t>;
+[Legacy] alias NetworkSessionProxyOpaqueData = Vector<uint8_t>;
+[Legacy] alias SVGPathOpaqueData = Vector<unsigned char>;
+[Legacy] alias SocketHostnameOpaqueData = Vector<char>;
+[Legacy] alias RTCNetworkOpaqueData = Vector<char>;
+[Legacy] alias HTTPBodyOpaqueData = Vector<uint8_t>;
+
+#if ENABLE(MEDIA_STREAM)
+[Legacy] alias UserMediaReplyOpaqueData = Vector<uint8_t>;
+#endif
+
+#if ENABLE(WEB_PUSH_NOTIFICATIONS)
+[Legacy] alias WebPushPublicKeyOpaqueData = Vector<uint8_t>;
+#endif
+
+#if ENABLE(WEB_CODECS)
+[Legacy] alias WebCodecChunkOpaqueData = Vector<uint8_t>;
+#endif
+
+#if HAVE(PARENTAL_CONTROLS_WITH_UNBLOCK_HANDLER)
+[Legacy] alias ContentFilterOpaqueData = Vector<uint8_t>;
+#endif
+
+#if PLATFORM(COCOA)
+[Legacy] alias NetworkCreationOpaqueData = RetainPtr<CFDataRef>;
+[Legacy] alias URLProtectionSpaceOpaqueData = Vector<WebKit::CoreIPCData>;
+[Legacy] alias FontPlatformSerializedAttributesOpaqueData = RetainPtr<CFDataRef>;
+[Legacy] alias TextRecognitionResultOpaqueData = RetainPtr<NSData>;
+[Legacy] alias TextAttachmentFileWrapperOpaqueData = RetainPtr<CFDataRef>;
+[Legacy] alias HEICAttachmentDataOpaqueData = RetainPtr<CFDataRef>;
+[Legacy] alias WebProcessCreationOpaqueData = RetainPtr<CFDataRef>;
+
+[Legacy] alias CueValueOpaqueData = RetainPtr<NSData>;
+[Legacy] alias BodyPartOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias PlistOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias URLRequestOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias SecTrustOpaqueData = WebKit::CoreIPCData;
+
+[Legacy] alias NetworkSessionCFDictionaryRef = RetainPtr<CFDictionaryRef>
+[Legacy] alias CoreIPCErrorCFDictionaryRef = RetainPtr<CFDictionaryRef>;
+[Legacy] alias FontPlatformCFArrayRef = RetainPtr<CFArrayRef>;
+[Legacy] alias PlatformFontInfoCFDictionaryRef = RetainPtr<CFDictionaryRef>;
+[Legacy] alias SecItemRequestDataCFDictionaryRef = RetainPtr<CFDictionaryRef>;
+#endif
+
+#if USE(CORE_TEXT)
+[Legacy] alias FontPlatformDataAttributesCFDictionaryRef = RetainPtr<CFDictionaryRef>;
+#endif
+
+#if USE(CF)
+[Legacy] alias CFObjectValueOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias ObjectValueOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias CFDictionaryOpaqueData = WebKit::CoreIPCData;
+[Legacy] alias SecTrustOpaqueData = WebKit::CoreIPCData;
+#endif 
+
+#if PLATFORM(COCOA)
+[Legacy] alias PlatformXRExternalTextureMachPort = MachSendRight;
+[Legacy] alias SignalMachPort = MachSendRight;
+[Legacy] alias SemaphoreMachPort = MachSendRight;
+[Legacy] alias SharedFileHandleMachPort = MachSendRight;
+[Legacy] alias CoreIPCCVPixelBufferRefMachPort = MachSendRight;
+[Legacy] alias SendRightMachPortOpaqueType = MachSendRight;
+[Legacy] alias DrawingAreaMachPort = MachSendRight;
+[Legacy] alias WebPageSetObscuredContentInsetsMachPort = MachSendRight;
+[Legacy] alias RemoteGraphicsContextGLMachPort = MachSendRight;
+[Legacy] alias LayerSetupDataMachPort = MachSendRight;
+[Legacy] alias RemoteMediaReplyMachPort = MachSendRight;
+[Legacy] alias RemoteCompositorMachPort = MachSendRight;
+[Legacy] alias DynamicContentMachPort = MachSendRight;
+[Legacy] alias ImageBufferMachPort = MachSendRight;
+[Legacy] alias RemoteMediaMachSendRightAnnotated = MachSendRightAnnotated;
+#endif
+
+#if ENABLE(MACH_PORT_LAYER_HOSTING)
+[Legacy] alias RemoteLayerTreeMachSendRightAnnotated = MachSendRightAnnotated;
+[Legacy] alias HostingContextMachSendRightAnnotated = MachSendRightAnnotated;
+#endif
+
+#if PLATFORM(COCOA) && ENABLE(WEBGL)
+[Legacy] alias GraphicsContextGLMachPort = MachSendRight;
+#endif
+
+#if PLATFORM(COCOA) && ENABLE(MEDIA_STREAM)
+[Legacy] alias SampleBufferMachSendRightAnnotated = MachSendRightAnnotated;
+#endif
+
+#if ENABLE(VIDEO_PRESENTATION_MODE)
+[Legacy] alias VideoPresentationManagerMachSendRightAnnotated = MachSendRightAnnotated;
+#endif
+
+#if ENABLE(ARKIT_INLINE_PREVIEW_MAC)
+[Legacy] alias ModelElementMachPort = MachSendRight;
+#endif
+
+#if ENABLE(GPU_PROCESS) && PLATFORM(COCOA) && ENABLE(VIDEO)
+[Legacy] alias SharedVideoMachPort = MachSendRight;
+#endif
+
+#if OS(DARWIN)
+[Legacy] alias ConnectionHandleMachPort = MachSendRight;
+#endif
+
+#if ENABLE(GPU_PROCESS)
+[Legacy] alias RemoteXRProjectionLayerMachPort = MachSendRight;
+#endif
+
+#if PLATFORM(COCOA) && ENABLE(GPU_PROCESS) && ENABLE(WEBGL)
+[Legacy] alias GraphicsContextIOSurfaceHandleMachPort = MachSendRight;
+[Legacy] alias GraphicsContextTextureHandleMachPort = MachSendRight;
+#endif
+
+#if OS(DARWIN)
+[Legacy] alias SharedMemoryHandleMachPort = MachSendRight;
+#endif
+
+#if HAVE(TASK_IDENTITY_TOKEN)
+[Legacy] alias ProcessIdentityMachPort = MachSendRight;
+#endif
+
+#if USE(SKIA)
+[Legacy] alias SkDataOpaqueData = std::span<const uint8_t>;
+[Legacy] alias SkColorSpaceOpaqueData = std::span<const uint8_t>;
+[Legacy] alias SKStringOpaqueData = std::span<const char>;
+#endif
+
+[NotDispatchableFromWebContent] alias ResumeDownloadOpaqueData = std::span<const uint8_t>;
+[NotDispatchableFromWebContent] alias CancelDownloadOpaqueData = std::span<const uint8_t>;

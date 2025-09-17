@@ -24,7 +24,7 @@
 
 headers: "CoreIPCSkString.h"
 [Wrapper=WebKit::CoreIPCSkString, CreateUsing=create] class SkString {
-    std::span<const char> data();
+    SKStringOpaqueData data();
 }
 
 #endif // USE(SKIA)

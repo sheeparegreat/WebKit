@@ -28,7 +28,6 @@
 #include "Connection.h"
 #include "MessageNames.h"
 #include <wtf/Forward.h>
-#include <wtf/MachSendRight.h>
 #include <wtf/RuntimeApplicationChecks.h>
 #include <wtf/ThreadSafeRefCounted.h>
 #include <wtf/text/WTFString.h>
@@ -166,7 +165,7 @@ private:
 #if PLATFORM(COCOA)
 class SendMachSendRight {
 public:
-    using Arguments = std::tuple<MachSendRight>;
+    using Arguments = std::tuple<TestGenerationMachPort>;
 
     static IPC::MessageName name() { return IPC::MessageName::TestWithStream_SendMachSendRight; }
     static constexpr bool isSync = false;
@@ -176,19 +175,19 @@ public:
     static constexpr bool isStreamEncodable = false;
     static constexpr bool isStreamBatched = false;
 
-    explicit SendMachSendRight(MachSendRight&& a1)
-        : m_a1(WTFMove(a1))
+    explicit SendMachSendRight(const TestGenerationMachPort& a1)
+        : m_a1(a1)
     {
     }
 
     template<typename Encoder>
     void encode(Encoder& encoder)
     {
-        encoder << WTFMove(m_a1);
+        SUPPRESS_FORWARD_DECL_ARG encoder << m_a1;
     }
 
 private:
-    MachSendRight&& m_a1;
+    SUPPRESS_FORWARD_DECL_MEMBER const TestGenerationMachPort& m_a1;
 };
 #endif
 
@@ -207,8 +206,8 @@ public:
     static constexpr bool isStreamBatched = false;
 
     static constexpr auto callbackThread = WTF::CompletionHandlerCallThread::ConstructionThread;
-    using ReplyArguments = std::tuple<MachSendRight>;
-    using Reply = CompletionHandler<void(MachSendRight&&)>;
+    using ReplyArguments = std::tuple<TestGenerationMachPort>;
+    using Reply = CompletionHandler<void(TestGenerationMachPort&&)>;
     ReceiveMachSendRight()
     {
     }
@@ -225,7 +224,7 @@ private:
 #if PLATFORM(COCOA)
 class SendAndReceiveMachSendRight {
 public:
-    using Arguments = std::tuple<MachSendRight>;
+    using Arguments = std::tuple<TestGenerationMachPort>;
 
     static IPC::MessageName name() { return IPC::MessageName::TestWithStream_SendAndReceiveMachSendRight; }
     static constexpr bool isSync = true;
@@ -237,21 +236,21 @@ public:
     static constexpr bool isStreamBatched = false;
 
     static constexpr auto callbackThread = WTF::CompletionHandlerCallThread::ConstructionThread;
-    using ReplyArguments = std::tuple<MachSendRight>;
-    using Reply = CompletionHandler<void(MachSendRight&&)>;
-    explicit SendAndReceiveMachSendRight(MachSendRight&& a1)
-        : m_a1(WTFMove(a1))
+    using ReplyArguments = std::tuple<TestGenerationMachPort>;
+    using Reply = CompletionHandler<void(TestGenerationMachPort&&)>;
+    explicit SendAndReceiveMachSendRight(const TestGenerationMachPort& a1)
+        : m_a1(a1)
     {
     }
 
     template<typename Encoder>
     void encode(Encoder& encoder)
     {
-        encoder << WTFMove(m_a1);
+        SUPPRESS_FORWARD_DECL_ARG encoder << m_a1;
     }
 
 private:
-    MachSendRight&& m_a1;
+    SUPPRESS_FORWARD_DECL_MEMBER const TestGenerationMachPort& m_a1;
 };
 #endif
 

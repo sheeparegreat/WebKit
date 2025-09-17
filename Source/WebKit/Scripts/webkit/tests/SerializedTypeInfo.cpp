@@ -608,6 +608,26 @@ Vector<SerializedTypeInfo> allSerializedTypes()
             "Variant<int, double>"_s
             , "alias"_s }
         } },
+        { "TestGenerationMachPort"_s, {
+        {
+            "MachSendRight"_s
+            , "alias"_s }
+        } },
+        { "ResumeDownloadOpaqueData"_s, {
+        {
+            "std::span<const uint8_t>"_s
+            , "alias"_s }
+        } },
+        { "PixelOpaqueData"_s, {
+        {
+            "std::span<const uint8_t>"_s
+            , "alias"_s }
+        } },
+        { "SomethingElseParsesThisOpaqueData"_s, {
+        {
+            "std::span<const uint8_t>"_s
+            , "alias"_s }
+        } },
     };
 }
 

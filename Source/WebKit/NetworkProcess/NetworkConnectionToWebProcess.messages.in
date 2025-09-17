@@ -28,7 +28,7 @@
 messages -> NetworkConnectionToWebProcess WantsDispatchMessage {
 
     ScheduleResourceLoad(struct WebKit::NetworkResourceLoadParameters resourceLoadParameters, std::optional<WebKit::NetworkResourceLoadIdentifier> existingLoaderToResume)
-    PerformSynchronousLoad(struct WebKit::NetworkResourceLoadParameters resourceLoadParameters) -> (WebCore::ResourceError error, WebCore::ResourceResponse response, Vector<uint8_t> data) Synchronous
+    PerformSynchronousLoad(struct WebKit::NetworkResourceLoadParameters resourceLoadParameters) -> (WebCore::ResourceError error, WebCore::ResourceResponse response, NetworkConnectionLoadOpaqueData data) Synchronous
     TestProcessIncomingSyncMessagesWhenWaitingForSyncReply(WebKit::WebPageProxyIdentifier pageID) -> (bool handled) Synchronous
     LoadPing(struct WebKit::NetworkResourceLoadParameters resourceLoadParameters)
     RemoveLoadIdentifier(WebCore::ResourceLoaderIdentifier resourceLoadIdentifier)
@@ -138,7 +138,7 @@ messages -> NetworkConnectionToWebProcess WantsDispatchMessage {
     UseRedirectionForCurrentNavigation(WebCore::ResourceLoaderIdentifier resourceLoadIdentifier, WebCore::ResourceResponse response)
 
 #if ENABLE(DECLARATIVE_WEB_PUSH)
-    NavigatorSubscribeToPushService(URL scopeURL, Vector<uint8_t> applicationServerKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
+    NavigatorSubscribeToPushService(URL scopeURL, NetworkConnectionServerKeyOpaqueData applicationServerKey) -> (Expected<WebCore::PushSubscriptionData, WebCore::ExceptionData> result)
     NavigatorUnsubscribeFromPushService(URL scopeURL, WebCore::PushSubscriptionIdentifier pushSubscriptionIdentifier) -> (Expected<bool, WebCore::ExceptionData> result)
     NavigatorGetPushSubscription(URL scopeURL) -> (Expected<std::optional<WebCore::PushSubscriptionData>, WebCore::ExceptionData> result)
     NavigatorGetPushPermissionState(URL scopeURL) -> (Expected<uint8_t, WebCore::ExceptionData> result)

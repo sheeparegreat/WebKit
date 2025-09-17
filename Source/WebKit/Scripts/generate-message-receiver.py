@@ -23,12 +23,15 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from __future__ import with_statement
+import importlib
 import os
 import sys
 
 import webkit.messages
 import webkit.parser
 import webkit.model
+
+generate_serializers = importlib.import_module('generate-serializers')
 
 def main(argv):
     receivers = []
@@ -57,6 +60,7 @@ def main(argv):
                 receiver = webkit.parser.parse(source_file)
 
         receiver.enforce_attribute_constraints()
+        receiver.enforce_opaque_transports_usage()
 
         receivers.append(receiver)
         if receiver_name != receiver.name:
@@ -71,16 +75,27 @@ def main(argv):
 
     receivers = webkit.model.generate_global_model(receivers)
 
+    # Parse OpaqueTransports.serialization.in for alias information to enforce NotDispatchableFromWebContent
+    alias_statements = []
+    opaque_transports_path = os.path.join(os.path.dirname(__file__), '..', 'Shared', 'OpaqueTransports.serialization.in')
+    if os.path.exists(opaque_transports_path):
+        try:
+            with open(opaque_transports_path) as serialization_file:
+                _, _, _, _, alias_statements, _, _ = generate_serializers.parse_serialized_types(serialization_file)
+        except Exception as e:
+            sys.stderr.write("Warning: Could not parse OpaqueTransports.serialization.in: %s\n" % e)
+            sys.exit(1)
+
     for receiver in receivers:
         if receiver.has_attribute(webkit.model.BUILTIN_ATTRIBUTE):
             continue
         with open('%sMessageReceiver.cpp' % receiver.name, "w+") as implementation_output:
-            implementation_output.write(webkit.messages.generate_message_handler(receiver))
+            implementation_output.write(webkit.messages.generate_message_handler(receiver, alias_statements))
 
         receiver_message_header = '%sMessages.h' % receiver.name
         receiver_header_files.append(receiver_message_header)
         with open(receiver_message_header, "w+") as header_output:
-            header_output.write(webkit.messages.generate_messages_header(receiver))
+            header_output.write(webkit.messages.generate_messages_header(receiver, alias_statements))
 
     with open('MessageNames.h', "w+") as message_names_header_output:
         message_names_header_output.write(webkit.messages.generate_message_names_header(receivers))

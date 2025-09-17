@@ -52,7 +52,7 @@
     int32_t packetId;
     int rtpSendtimeExtensionId;
     int64_t srtpAuthTagLength;
-    std::span<const char> srtpAuthKey;
+    SerializableDataOpaqueData srtpAuthKey;
     int64_t srtpPacketIndex;
 };
 

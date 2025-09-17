@@ -33,7 +33,7 @@ using WebKit::ObjectValue = Variant<
     WebKit::CoreIPCArray,
     WebKit::CoreIPCCFType,
     WebKit::CoreIPCColor,
-    WebKit::CoreIPCData,
+    ObjectValueOpaqueData,
     WebKit::CoreIPCDate,
     WebKit::CoreIPCDictionary,
     WebKit::CoreIPCError,

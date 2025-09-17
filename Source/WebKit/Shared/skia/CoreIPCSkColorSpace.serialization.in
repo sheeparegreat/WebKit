@@ -26,7 +26,7 @@
 additional_forward_declaration: class SkColorSpace;
 headers: "CoreIPCSkColorSpace.h"
 [Wrapper=WebKit::CoreIPCSkColorSpace, CreateUsing=create, AdditionalEncoder=StreamConnectionEncoder] class sk_sp<SkColorSpace> {
-    std::span<const uint8_t> dataReference();
+    SkColorSpaceOpaqueData dataReference();
 }
 
 #endif // USE(SKIA)

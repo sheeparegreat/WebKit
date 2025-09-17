@@ -35,7 +35,7 @@ messages -> UserMediaCaptureManagerProxy {
     StopProducingData(WebCore::RealtimeMediaSourceIdentifier id)
     RemoveSource(WebCore::RealtimeMediaSourceIdentifier id)
     ApplyConstraints(WebCore::RealtimeMediaSourceIdentifier id, struct WebCore::MediaConstraints constraints)
-    TakePhoto(WebCore::RealtimeMediaSourceIdentifier sourceID, struct WebCore::PhotoSettings settings) -> (Expected<std::pair<Vector<uint8_t>, String>, String> result);
+    TakePhoto(WebCore::RealtimeMediaSourceIdentifier sourceID, struct WebCore::PhotoSettings settings) -> (Expected<std::pair<UserMediaReplyOpaqueData, String>, String> result);
     GetPhotoCapabilities(WebCore::RealtimeMediaSourceIdentifier sourceID) -> (Expected<WebCore::PhotoCapabilities, String> result) Async
     GetPhotoSettings(WebCore::RealtimeMediaSourceIdentifier sourceID) -> (Expected<WebCore::PhotoSettings, String> result) Async
     Clone(WebCore::RealtimeMediaSourceIdentifier clonedID, WebCore::RealtimeMediaSourceIdentifier cloneID, WebCore::PageIdentifier pageIdentifier)

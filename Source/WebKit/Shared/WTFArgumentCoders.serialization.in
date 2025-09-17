@@ -28,7 +28,7 @@ webkit_platform_headers: "StreamConnectionEncoder.h"
 
 header: <wtf/text/CString.h>
 [CustomHeader, WebKitPlatform, AdditionalEncoder=StreamConnectionEncoder] class WTF::CString {
-   std::span<const char> span()
+   CStringOpaqueData span()
 }
 
 [AdditionalEncoder=StreamConnectionEncoder] class WTF::MediaTime {
@@ -262,11 +262,11 @@ enum class WTFLogLevel : uint8_t {
     Debug
 };
 
-using FileSystem::Salt = std::array<uint8_t, 8>;
+using FileSystem::Salt = SaltOpaqueData;
 
 #if PLATFORM(COCOA)
 [CustomEncoder] struct WTF::MachSendRightAnnotated {
-    MachSendRight sendRight;
-    FixedVector<uint8_t> data;
+    SendRightMachPortOpaqueType sendRight;
+    FixedVectorOpaqueData data;
 }
 #endif

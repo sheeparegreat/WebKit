@@ -24,7 +24,7 @@ webkit_platform_header: "IPCSemaphore.h"
 
 [CustomHeader, WebKitPlatform] class IPC::Semaphore {
 #if PLATFORM(COCOA)
-    MachSendRight createSendRight();
+    SemaphoreMachPort createSendRight();
 #endif
 #if OS(WINDOWS)
     Win32Handle win32Handle();

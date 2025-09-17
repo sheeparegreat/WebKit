@@ -60,10 +60,10 @@ messages -> MediaPlayerPrivateRemote {
     RemoteTextTrackConfigurationChanged(WebCore::TrackID trackID, struct WebKit::TextTrackPrivateRemoteConfiguration configuration)
 
     ParseWebVTTFileHeader(WebCore::TrackID trackID, String header)
-    ParseWebVTTCueData(WebCore::TrackID trackID, std::span<const uint8_t> data)
+    ParseWebVTTCueData(WebCore::TrackID trackID, CueOpaqueData data)
     ParseWebVTTCueDataStruct(WebCore::TrackID trackID, WebCore::ISOWebVTTCue cueData)
 
-    AddDataCue(WebCore::TrackID trackID, MediaTime start, MediaTime end, std::span<const uint8_t> data)
+    AddDataCue(WebCore::TrackID trackID, MediaTime start, MediaTime end, CueOpaqueData data)
 #if ENABLE(DATACUE_VALUE)
     AddDataCueWithType(WebCore::TrackID trackID, MediaTime start, MediaTime end, WebCore::SerializedPlatformDataCueValue cueData, String type)
     UpdateDataCue(WebCore::TrackID trackID, MediaTime start, MediaTime end, WebCore::SerializedPlatformDataCueValue cueData)
@@ -84,11 +84,11 @@ messages -> MediaPlayerPrivateRemote {
 
 #if ENABLE(ENCRYPTED_MEDIA)
     WaitingForKeyChanged(bool waitingForKey)
-    InitializationDataEncountered(String initDataType, std::span<const uint8_t> initData)
+    InitializationDataEncountered(String initDataType, EncryptedMediaOpaqueData initData)
 #endif
 
 #if ENABLE(LEGACY_ENCRYPTED_MEDIA)
-    MediaPlayerKeyNeeded(std::span<const uint8_t> message)
+    MediaPlayerKeyNeeded(EncryptedMediaOpaqueData message)
 #endif
 
 #if ENABLE(WIRELESS_PLAYBACK_TARGET)

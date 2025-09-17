@@ -28,6 +28,15 @@ import sys
 from webkit import parser
 from webkit.model import BUILTIN_ATTRIBUTE, SYNCHRONOUS_ATTRIBUTE, ALLOWEDWHENWAITINGFORSYNCREPLY_ATTRIBUTE, ALLOWEDWHENWAITINGFORSYNCREPLYDURINGUNBOUNDEDIPC_ATTRIBUTE, MAINTHREADCALLBACK_ATTRIBUTE, STREAM_ATTRIBUTE, CALL_WITH_REPLY_ID_ATTRIBUTE, MessageReceiver, Message
 
+
+def is_not_dispatchable_from_webcontent_alias(parameter_type, alias_statements):
+    if alias_statements is None:
+        return False
+    for alias_statement in alias_statements:
+        if alias_statement.name == parameter_type and not alias_statement.can_webcontent_dispatch:
+            return True
+    return False
+
 _license_header = """/*
  * Copyright (C) 2021-2023 Apple Inc. All rights reserved.
  *
@@ -136,6 +145,9 @@ def types_that_must_be_moved():
         'IPC::Signal',
         'IPC::StreamServerConnectionHandle',
         'MachSendRight',
+        'DrawingAreaMachPort',
+        'WebPageSetObscuredContentInsetsMachPort',
+        'RemoteXRProjectionLayerMachPort',
         'std::optional<WebKit::SharedVideoFrame>',
         'Vector<WebCore::SharedMemory::Handle>',
         'WebKit::WebGPU::ExternalTextureDescriptor',
@@ -233,7 +245,8 @@ def arguments_constructor_name(type, name):
 
     return name
 
-def message_to_struct_declaration(receiver, message):
+
+def message_to_struct_declaration(receiver, message, alias_statements=None):
     result = []
     function_parameters = [(function_parameter_type(x.type, x.kind), x.name) for x in message.parameters]
     requires_suppress_forward_decl = [function_parameter_requires_suppress_forward_decl(x.type, x.kind) for x in message.parameters]
@@ -302,6 +315,8 @@ def message_to_struct_declaration(receiver, message):
     result.append('    {\n')
     for i in range(len(message.parameters)):
         parameter = message.parameters[i]
+        if is_not_dispatchable_from_webcontent_alias(parameter.type, alias_statements):
+            result.append('        RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(!isInWebProcess());\n')
         result.append('        ')
         if requires_suppress_forward_decl[i]:
             result.append('SUPPRESS_FORWARD_DECL_ARG ')
@@ -745,7 +760,7 @@ def forward_declarations_and_headers(receiver):
     return (forward_declarations, header_includes)
 
 
-def generate_messages_header(receiver):
+def generate_messages_header(receiver, alias_statements=None):
     result = []
 
     result.append(_license_header)
@@ -781,7 +796,7 @@ def generate_messages_header(receiver):
     result.append('    return IPC::ReceiverName::%s;\n' % receiver.name)
     result.append('}\n')
     result.append('\n')
-    result.append('\n'.join([message_to_struct_declaration(receiver, x) for x in receiver.messages]))
+    result.append('\n'.join([message_to_struct_declaration(receiver, x, alias_statements) for x in receiver.messages]))
     result.append('\n')
     result.append('} // namespace %s\n} // namespace Messages\n' % receiver.name)
 
@@ -1607,7 +1622,7 @@ def header_for_receiver_name(name):
     return special_headers.get(name, name)
 
 
-def generate_message_handler(receiver):
+def generate_message_handler(receiver, alias_statements=None):
     header_conditions = {
         '"%s"' % messages_header_filename(receiver): [None],
         '"HandleMessage.h"': [None],

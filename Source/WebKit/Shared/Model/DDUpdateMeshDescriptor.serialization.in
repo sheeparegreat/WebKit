@@ -27,7 +27,7 @@ header: "DDUpdateMeshDescriptor.h"
     Vector<KeyValuePair<int32_t, WebKit::DDModel::DDMeshPart>> parts;
     Vector<KeyValuePair<int32_t, uint64_t>> renderFlags;
     Vector<WebKit::DDModel::DDReplaceVertices> vertices;
-    Vector<uint8_t> indices;
+    DDUpdateMeshOpaqueData indices;
     WebCore::DDModel::DDFloat4x4 transform;
     Vector<WebCore::DDModel::DDFloat4x4> instanceTransforms4x4;
     Vector<WTF::String> materialIds;

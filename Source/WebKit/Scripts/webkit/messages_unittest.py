@@ -26,6 +26,7 @@
 # cd Source/WebKit/Scripts && python3 -m unittest discover -p '*_unittest.py'
 
 from __future__ import print_function
+import importlib
 import os
 import re
 import sys
@@ -35,6 +36,8 @@ module_directory = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.append(os.path.abspath(os.path.join(module_directory, os.path.pardir)))
 from webkit import messages, model, parser  # noqa: E402
+
+generate_serializers = importlib.import_module('generate-serializers')
 
 tests_directory = os.path.join(module_directory, 'tests')
 
@@ -66,6 +69,7 @@ _test_receiver_names = [
     'TestWithWantsAsyncDispatch',
     'TestWithWantsDispatch',
     'TestWithWantsDispatchNoSyncMessages',
+    'TestWithOpaqueTransports'
 ]
 
 
@@ -87,6 +91,17 @@ class GeneratedFileContentsTest(unittest.TestCase):
     def setUp(self):
         self.test_receivers = [parse_receiver(receiver_name) for receiver_name in _test_receiver_names]
         self.receivers = model.generate_global_model(self.test_receivers)
+
+        # Get alias information to enforce NotDispatchableFromWebContent
+        self.alias_statements = []
+        test_serialization_path = os.path.join(tests_directory, 'TestWithOpaqueTransports.serialization.in')
+        if os.path.exists(test_serialization_path):
+            try:
+                with open(test_serialization_path) as serialization_file:
+                    _, _, _, _, self.alias_statements, _, _ = generate_serializers.parse_serialized_types(serialization_file)
+            except Exception as e:
+                sys.stderr.write("Warning: Could not parse TestWithOpaqueTransports.serialization.in: %s\n" % e)
+                sys.exit(1)
 
     def assertGeneratedFileContentsEqual(self, actual_file_contents, expected_file_name):
         try:
@@ -110,9 +125,9 @@ class GeneratedFileContentsTest(unittest.TestCase):
 
     def test_receiver(self):
         for receiver_name, receiver in zip(_test_receiver_names, self.test_receivers):
-            header_contents = messages.generate_messages_header(receiver)
+            header_contents = messages.generate_messages_header(receiver, self.alias_statements)
             self.assertGeneratedFileContentsEqual(header_contents, os.path.join(tests_directory, '{}Messages.h'.format(receiver_name)))
-            implementation_contents = messages.generate_message_handler(receiver)
+            implementation_contents = messages.generate_message_handler(receiver, self.alias_statements)
             self.assertGeneratedFileContentsEqual(implementation_contents, os.path.join(tests_directory, '{}MessageReceiver.cpp'.format(receiver_name)))
 
     def test_message_names(self):

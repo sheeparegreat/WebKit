@@ -66,6 +66,7 @@
 
 #if PLATFORM(COCOA)
 #include <pal/spi/cocoa/TCCSPI.h>
+#include <wtf/MachSendRightAnnotated.h>
 #endif
 
 #if USE(GRAPHICS_LAYER_WC)

@@ -30,7 +30,7 @@
 ]
 messages -> RemoteXRProjectionLayer Stream {
 #if PLATFORM(VISION)
-    void StartFrame(uint64_t frameIndex, MachSendRight colorBuffer, MachSendRight depthBuffer, MachSendRight completionSyncEvent, uint64_t textureIndex, struct PlatformXR::RateMapDescription rateMapDescription) NotStreamEncodable
+    void StartFrame(uint64_t frameIndex, RemoteXRProjectionLayerMachPort colorBuffer, RemoteXRProjectionLayerMachPort depthBuffer, RemoteXRProjectionLayerMachPort completionSyncEvent, uint64_t textureIndex, struct PlatformXR::RateMapDescription rateMapDescription) NotStreamEncodable
 #endif
     void EndFrame()
     void Destruct()

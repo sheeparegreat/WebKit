@@ -92,8 +92,8 @@ messages -> WebProcessProxy WantsDispatchMessage {
 #endif
     [EnabledBy=AppBadgeEnabled] SetAppBadgeFromWorker(WebCore::SecurityOriginData origin, std::optional<uint64_t> badge)
 
-    SerializeAndWrapCryptoKey(struct WebCore::CryptoKeyData key) -> (std::optional<Vector<uint8_t>> wrappedKey) Synchronous
-    UnwrapCryptoKey(struct WebCore::WrappedCryptoKey wrappedKey) -> (std::optional<Vector<uint8_t>> key) Synchronous
+    SerializeAndWrapCryptoKey(struct WebCore::CryptoKeyData key) -> (std::optional<CryptoKeyOpaqueData> wrappedKey) Synchronous
+    UnwrapCryptoKey(struct WebCore::WrappedCryptoKey wrappedKey) -> (std::optional<CryptoKeyOpaqueData> key) Synchronous
 
 #if ENABLE(LOGD_BLOCKING_IN_WEBCONTENT)
 #if ENABLE(STREAMING_IPC_IN_LOG_FORWARDING)

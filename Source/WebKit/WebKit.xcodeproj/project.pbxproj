@@ -2430,6 +2430,7 @@
 		F411457D2CD94161004CDBD1 /* _WKTouchEventGeneratorInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = F411457C2CD94161004CDBD1 /* _WKTouchEventGeneratorInternal.h */; };
 		F416F1C02C5C3E360085D8DD /* WKScrollViewTrackingTapGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = F416F1BE2C5C3E360085D8DD /* WKScrollViewTrackingTapGestureRecognizer.h */; };
 		F41795A62AC61B78007F5F12 /* CompactContextMenuPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = F41795A42AC619A2007F5F12 /* CompactContextMenuPresenter.h */; };
+		F422427A2E8C389800C1143F /* opaque_types.py in Copy Message Generation Scripts */ = {isa = PBXBuildFile; fileRef = F42242782E8C37AB00C1143F /* opaque_types.py */; };
 		F4299507270E234D0032298B /* StreamMessageReceiver.h in Headers */ = {isa = PBXBuildFile; fileRef = F4299506270E234C0032298B /* StreamMessageReceiver.h */; };
 		F42A04712CA1B328000D3118 /* _WKTextRunInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = F42A04702CA1B328000D3118 /* _WKTextRunInternal.h */; };
 		F42A04722CA1B3FC000D3118 /* _WKTextRun.h in Headers */ = {isa = PBXBuildFile; fileRef = F42A046C2CA1B2A4000D3118 /* _WKTextRun.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -3068,6 +3069,7 @@
 				1A07D2F81919B3A900ECDA16 /* __init__.py in Copy Message Generation Scripts */,
 				1A07D2F91919B3A900ECDA16 /* messages.py in Copy Message Generation Scripts */,
 				1A07D2FA1919B3A900ECDA16 /* model.py in Copy Message Generation Scripts */,
+				F422427A2E8C389800C1143F /* opaque_types.py in Copy Message Generation Scripts */,
 				1A07D2FB1919B3A900ECDA16 /* parser.py in Copy Message Generation Scripts */,
 			);
 			name = "Copy Message Generation Scripts";
@@ -6997,6 +6999,7 @@
 		86D196BF29A7890F0083B077 /* GPUProcessConnectionParameters.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = GPUProcessConnectionParameters.serialization.in; sourceTree = "<group>"; };
 		86D1970729AE4E8A0083B077 /* NetworkProcessConnectionParameters.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = NetworkProcessConnectionParameters.serialization.in; sourceTree = "<group>"; };
 		86D1970829AE4E930083B077 /* NetworkProcessConnectionParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkProcessConnectionParameters.h; sourceTree = "<group>"; };
+		86D732F82E67043000C4BACD /* OpaqueTransports.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = OpaqueTransports.serialization.in; sourceTree = "<group>"; };
 		86DA60C628EAE9C00044FE4D /* FocusedElementInformation.serialization.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FocusedElementInformation.serialization.in; sourceTree = "<group>"; };
 		86DA60CA28EB11830044FE4D /* InteractionInformationAtPosition.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; name = InteractionInformationAtPosition.serialization.in; path = ios/InteractionInformationAtPosition.serialization.in; sourceTree = "<group>"; };
 		86DD518B28EF028500DF2A58 /* TextFlags.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = TextFlags.serialization.in; sourceTree = "<group>"; };
@@ -8470,6 +8473,7 @@
 		F416F1BF2C5C3E360085D8DD /* WKScrollViewTrackingTapGestureRecognizer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = WKScrollViewTrackingTapGestureRecognizer.mm; path = ios/WKScrollViewTrackingTapGestureRecognizer.mm; sourceTree = "<group>"; };
 		F41795A42AC619A2007F5F12 /* CompactContextMenuPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompactContextMenuPresenter.h; path = ios/CompactContextMenuPresenter.h; sourceTree = "<group>"; };
 		F41795A52AC619A2007F5F12 /* CompactContextMenuPresenter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CompactContextMenuPresenter.mm; path = ios/CompactContextMenuPresenter.mm; sourceTree = "<group>"; };
+		F42242782E8C37AB00C1143F /* opaque_types.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = opaque_types.py; path = webkit/opaque_types.py; sourceTree = "<group>"; };
 		F425374F2AF9A25A00873864 /* InteractionInformationRequest.serialization.in */ = {isa = PBXFileReference; lastKnownFileType = text; name = InteractionInformationRequest.serialization.in; path = ios/InteractionInformationRequest.serialization.in; sourceTree = "<group>"; };
 		F4299506270E234C0032298B /* StreamMessageReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamMessageReceiver.h; sourceTree = "<group>"; };
 		F42A046C2CA1B2A4000D3118 /* _WKTextRun.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _WKTextRun.h; sourceTree = "<group>"; };
@@ -9882,6 +9886,7 @@
 				5CD748B523C8EB190092A9B5 /* NetworkResourceLoadIdentifier.h */,
 				FA45FA392E4545E500057B45 /* NodeHitTestResult.h */,
 				FA45FA3B2E45462200057B45 /* NodeHitTestResult.serialization.in */,
+				86D732F82E67043000C4BACD /* OpaqueTransports.serialization.in */,
 				8657EE3928EDB8C500FF9B40 /* Pasteboard.serialization.in */,
 				7AFBD36E21E546E3005DBACB /* PersistencyUtils.cpp */,
 				7AFBD36D21E546E3005DBACB /* PersistencyUtils.h */,
@@ -16538,6 +16543,7 @@
 				5CD4F01C28B6ADDB00F9ECEA /* generate-serializers.py */,
 				0FC0856F187CE0A900780D86 /* messages.py */,
 				0FC08570187CE0A900780D86 /* model.py */,
+				F42242782E8C37AB00C1143F /* opaque_types.py */,
 				0FC08571187CE0A900780D86 /* parser.py */,
 				53B1640F2203715000EC4166 /* process-entitlements.sh */,
 			);

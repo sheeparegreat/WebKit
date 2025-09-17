@@ -43,7 +43,7 @@ header: <WebCore/FontPlatformData.h>
     String descriptorLanguage;
     String descriptorTextStyle;
 
-    std::optional<RetainPtr<CFDataRef>> matrix;
+    std::optional<FontPlatformSerializedAttributesOpaqueData> matrix;
 
     std::optional<RetainPtr<CFBooleanRef>> ignoreLegibilityWeight;
 
@@ -63,7 +63,7 @@ header: <WebCore/FontPlatformData.h>
     std::optional<WebCore::FontPlatformOpticalSize> opticalSize;
     std::optional<WebCore::FontPlatformSerializedTraits> traits;
 
-    std::optional<RetainPtr<CFArrayRef>> featureSettings;
+    std::optional<FontPlatformCFArrayRef> featureSettings;
 
 #if HAVE(ADDITIONAL_FONT_PLATFORM_SERIALIZED_ATTRIBUTES)
     std::optional<RetainPtr<CFNumberRef>> additionalNumber;
@@ -71,7 +71,7 @@ header: <WebCore/FontPlatformData.h>
 };
 
 [CustomHeader] struct WebCore::FontPlatformSerializedCreationData {
-    Vector<uint8_t> fontFaceData;
+    FontPlatformOpaqueData fontFaceData;
     std::optional<WebCore::FontPlatformSerializedAttributes> attributes;
     String itemInCollection;
 };
@@ -92,7 +92,7 @@ class WebCore::ContentFilterUnblockHandler {
     std::optional<URL> evaluatedURL();
 #endif
 #if HAVE(PARENTAL_CONTROLS_WITH_UNBLOCK_HANDLER)
-    Vector<uint8_t> webFilterEvaluatorData()
+    ContentFilterOpaqueData webFilterEvaluatorData()
 #endif
     bool unblockedAfterRequest()
 }
