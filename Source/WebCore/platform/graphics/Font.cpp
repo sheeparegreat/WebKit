@@ -60,7 +60,7 @@
 
 namespace WebCore {
 
-unsigned GlyphPage::s_count = 0;
+std::atomic<unsigned> GlyphPage::s_count = 0;
 
 const float smallCapsFontSizeMultiplier = 0.7f;
 const float emphasisMarkFontSizeMultiplier = 0.5f;
