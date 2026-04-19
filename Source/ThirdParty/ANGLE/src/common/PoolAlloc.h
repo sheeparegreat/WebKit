@@ -18,6 +18,10 @@
 #    define ANGLE_POOL_ALLOC_GUARD_BLOCKS  // define to enable guard block checking
 #endif
 
+#if __has_feature(thread_sanitizer)
+#    define ANGLE_DISABLE_POOL_ALLOC  // Use system allocator under TSan for accurate race detection
+#endif
+
 //
 // This header defines an allocator that can be used to efficiently
 // allocate a large number of small requests for heap memory, with the
@@ -79,8 +83,8 @@ class PoolAllocator : angle::NonCopyable
     class Segment;
     std::vector<Segment> mSingleObjectSegments;  // Large objects.
 
-#if !defined(ANGLE_DISABLE_POOL_ALLOC)
     static constexpr size_t kSegmentSize = 32768;
+#if !defined(ANGLE_DISABLE_POOL_ALLOC)
     bool allocateNewPoolSegment();
 
     Span<uint8_t> mCurrentPool;  // The unused part of memory in last entry of mPoolSegments.
