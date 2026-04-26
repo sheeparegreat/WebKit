@@ -308,6 +308,18 @@ set(WebKit_SWIFT_EXTRA_OPTIONS
     -Xcc -I${ICU_INCLUDE_DIRS}
 )
 
+# Targets that stage the headers the -typecheck/-emit-clang-header pass reads.
+# Declaring these lets WEBKIT_TARGET_ADD_SWIFT_SOURCES detach the header
+# command from cmake_object_order_depends_target_WebKit so it starts once
+# headers are copied instead of waiting for WebCore/WebKitLegacy to link.
+set(WebKit_SWIFT_HEADER_DEPENDS
+    WebKit_CopyHeaders
+    PAL_CopyHeaders
+    WTF_CopyHeaders
+    bmalloc_CopyHeaders
+    bmalloc_CopyPrivateHeaders
+)
+
 # webpushd entry points are standalone daemon executables, not part of the
 # framework. WKMain.mm references them, so provide stubs that return error.
 file(WRITE "${CMAKE_BINARY_DIR}/WebKit/WebPushDaemonStubs.cpp"
