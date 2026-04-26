@@ -68,6 +68,22 @@ macro(WEBKIT_COMPUTE_SOURCES _framework)
         endif ()
 
         foreach (_file IN LISTS _outputTmp)
+            # generate-unified-source-bundles.py emits absolute paths for the
+            # UnifiedSource*.cpp bundles it writes, but passes @no-unify entries
+            # through verbatim from Sources.txt. Generated bindings are listed
+            # in Sources.txt by filename alone (e.g. "JSDOMWindow.cpp") because
+            # the bundler resolves them against --derived-sources-path; once a
+            # binding is marked @no-unify the bundler stops resolving it and we
+            # get the bare filename here. CMake then resolves a bare relative
+            # path against CMAKE_CURRENT_SOURCE_DIR — the source tree — where
+            # the generated file does not exist, so target_sources() fails.
+            # Detect a bare filename (no directory component, portable across
+            # / and \ separators) and qualify it against DerivedSources so the
+            # build can reference it before generation has produced it.
+            get_filename_component(_fileDir "${_file}" DIRECTORY)
+            if (NOT _fileDir)
+                set(_file "${_derivedSourcesPath}/${_file}")
+            endif ()
             if (_file MATCHES "\\.c$")
                 list(APPEND ${_framework}_C_SOURCES ${_file})
             elseif (_file MATCHES "-ARC\\.mm$")
