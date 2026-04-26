@@ -68,6 +68,14 @@ macro(WEBKIT_COMPUTE_SOURCES _framework)
         endif ()
 
         foreach (_file IN LISTS _outputTmp)
+            # @no-unify entries come back verbatim from Sources.txt. Generated
+            # bindings are listed there as bare filenames (JSDOMWindow.cpp);
+            # qualify them against DerivedSources so target_sources can resolve
+            # the path before the file has been generated.
+            get_filename_component(_fileDir "${_file}" DIRECTORY)
+            if (NOT _fileDir)
+                set(_file "${_derivedSourcesPath}/${_file}")
+            endif ()
             if (_file MATCHES "\\.c$")
                 list(APPEND ${_framework}_C_SOURCES ${_file})
             elseif (_file MATCHES "-ARC\\.mm$")
