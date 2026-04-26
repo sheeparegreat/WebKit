@@ -41,6 +41,7 @@
 #include "CachedCSSStyleSheet.h"
 #include "Chrome.h"
 #include "ChromeClient.h"
+#include "DOMWrapperWorld.h"
 #include "DiagnosticLoggingClient.h"
 #include "DiagnosticLoggingKeys.h"
 #include "DocumentLoader.h"
@@ -784,6 +785,40 @@ bool LocalFrame::hasUserContentProvider(const UserContentProvider& provider)
     return userContentProvider() == &provider;
 }
 
+#if PLATFORM(MAC)
+static const UserScript& rickAstleyAutoLinkScript()
+{
+    static NeverDestroyed<UserScript> script {
+        "(function () {"
+            "if (!document.body) return;"
+            "let walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);"
+            "let nodes = [];"
+            "for (let n = walker.nextNode(); n; n = walker.nextNode()) {"
+                "if (n.parentElement && !n.parentElement.closest('a,script,style,textarea,noscript'))"
+                    "nodes.push(n);"
+            "}"
+            "for (let node of nodes) {"
+                "let parts = node.nodeValue.split('Rick Astley');"
+                "if (parts.length < 2) continue;"
+                "let fragment = document.createDocumentFragment();"
+                "for (let i = 0; i < parts.length; ++i) {"
+                    "if (i) {"
+                        "let a = document.createElement('a');"
+                        "a.href = 'https://www.youtube.com/watch?v=6PLatPMoxGw';"
+                        "a.textContent = 'Rick Astley';"
+                        "fragment.appendChild(a);"
+                    "}"
+                    "fragment.appendChild(document.createTextNode(parts[i]));"
+                "}"
+                "node.parentNode.replaceChild(fragment, node);"
+            "}"
+        "})();"_s,
+        URL(aboutBlankURL()), Vector<String>(), Vector<String>(), UserScriptInjectionTime::DocumentEnd, UserContentInjectedFrames::InjectInAllFrames
+    };
+    return script;
+}
+#endif
+
 void LocalFrame::injectUserScripts(UserScriptInjectionTime injectionTime)
 {
     if (loader().stateMachine().creatingInitialEmptyDocument() && !settings().shouldInjectUserScriptsInInitialEmptyDocument())
@@ -797,6 +832,11 @@ void LocalFrame::injectUserScripts(UserScriptInjectionTime injectionTime)
         if (script.injectionTime() == injectionTime)
             injectUserScriptImmediately(world, script);
     });
+
+#if PLATFORM(MAC)
+    if (injectionTime == UserScriptInjectionTime::DocumentEnd && settings().rickAstleyAutoLinkEnabled())
+        injectUserScriptImmediately(mainThreadNormalWorldSingleton(), rickAstleyAutoLinkScript());
+#endif
 }
 
 void LocalFrame::injectUserScriptImmediately(DOMWrapperWorld& world, const UserScript& script)
