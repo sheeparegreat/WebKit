@@ -624,6 +624,14 @@ macro(WEBKIT_SETUP_SWIFT_AND_GENERATE_SWIFT_CPP_INTEROP_HEADER _target _module_n
         # of the modulemap and hader for WebKit's internal "APIs" which we
         # make available from C++ to Swift.
         list(APPEND _swift_options "-cxx-interoperability-mode=default" "-Xcc" "-std=c++2b" "-explicit-module-build" "-enable-upcoming-feature" "InternalImportsByDefault" "-Xcc" "-I${_interop_module_path}")
+        # -explicit-module-build makes swiftc scan and compile every transitive
+        # SDK Clang module to .pcm before typechecking. Without a fixed cache
+        # path each invocation does that into a private temp dir and discards
+        # it, so the -typecheck/-emit-clang-header pass below and cmake's own
+        # Swift compile each pay the full SDK-module cold cost, every build.
+        # Pin the cache so the second invocation -- and every later rebuild --
+        # reuses the first one's .pcm set.
+        list(APPEND _swift_options "-module-cache-path" "${CMAKE_BINARY_DIR}/SwiftModuleCache")
         # swiftc spawns swift-plugin-server under sandbox-exec to expand macros
         # (e.g. SwiftUI @State). When the cmake build itself runs inside an
         # outer sandbox that disallows nested sandbox_apply, macro expansion
