@@ -267,6 +267,7 @@ Tests/WebKit/WKWebView/RestoreLocalStorage.mm @nonARC
 Tests/WebKit/WKWebView/RestoreScrollPosition.mm @nonARC
 Tests/WebKit/WKWebView/RestoreSessionStateWithoutNavigation.mm @nonARC
 Tests/WebKit/WKWebView/RestoreSessionStorage.mm @nonARC
+Tests/WebKit/WKWebView/RickAstleyAutoLink.mm @nonARC
 Tests/WebKit/WKWebView/RunOpenPanel.mm @nonARC
 Tests/WebKit/WKWebView/RunScriptAfterDocumentLoad.mm @nonARC
 Tests/WebKit/WKWebView/SafeBrowsing.mm @nonARC

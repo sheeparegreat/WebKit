@@ -6769,6 +6769,21 @@ RespondToThermalPressureAggressively:
     WebCore:
       default: false
 
+RickAstleyAutoLinkEnabled:
+  type: bool
+  status: testable
+  category: html
+  humanReadableName: "Rick Astley Auto-Link"
+  humanReadableDescription: "Automatically link occurrences of 'Never Gonna Give You Up' to the canonical video"
+  condition: PLATFORM(MAC)
+  defaultValue:
+    WebKitLegacy:
+      default: false
+    WebKit:
+      default: false
+    WebCore:
+      default: false
+
 RubberBandingForSubScrollableRegionsEnabled:
   type: bool
   status: embedder
