@@ -25,6 +25,8 @@
 
 import Foundation
 import WebKit_Internal
+import struct Foundation.URL
+import struct Swift.String
 
 @objc
 @implementation

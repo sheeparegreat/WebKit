@@ -30,6 +30,7 @@
 
 import WebKit_Internal
 import wtf
+import struct Swift.String
 
 /// Conform any WTF::Ref<T> to this protocol to get useful extensions.
 protocol CxxRef {

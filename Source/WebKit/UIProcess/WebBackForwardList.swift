@@ -28,6 +28,7 @@
 import WebCore_Private
 import WebKit_Internal
 import wtf
+import struct Swift.String
 
 // A note on swift-format-ignore: NeverForceUnwrap:
 // This file currently aims to closely adhere to the C++ original which uses
