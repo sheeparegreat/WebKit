@@ -78,6 +78,11 @@ list(APPEND WebKit_SOURCES
     UIProcess/PDF/WKPDFPageNumberIndicator.mm
     ${WEBKIT_DIR}/UIProcess/API/Cocoa/_WKTextExtraction.swift
 
+    ${WEBKIT_DIR}/Shared/API/APIArray.swift
+    ${WEBKIT_DIR}/UIProcess/StdlibExtras.swift
+    ${WEBKIT_DIR}/UIProcess/WebBackForwardList.swift
+    ${WebKit_DERIVED_SOURCES_DIR}/WebBackForwardListMessageReceiver.swift
+
     WebProcess/WebAuthentication/WebAuthenticatorCoordinator.cpp
 
     WebProcess/cocoa/AudioSessionRoutingArbitrator.cpp
@@ -95,6 +100,7 @@ list(APPEND WebKit_PRIVATE_INCLUDE_DIRECTORIES
     "${WEBKIT_DIR}/UIProcess/API/Cocoa"
     "${WEBKIT_DIR}/UIProcess/Authentication/cocoa"
     "${WEBKIT_DIR}/UIProcess/Cocoa"
+    "${WEBKIT_DIR}/UIProcess/Cocoa/Separated"
     "${WEBKIT_DIR}/UIProcess/Cocoa/SOAuthorization"
     "${WEBKIT_DIR}/UIProcess/Cocoa/TextExtraction"
     "${WEBKIT_DIR}/UIProcess/Extensions/Cocoa"
@@ -178,6 +184,9 @@ set(WebKit_SWIFT_INCLUDE_DIRECTORIES
 # headers are copied instead of waiting for WebCore/WebKitLegacy to link.
 set(WebKit_SWIFT_HEADER_DEPENDS
     WebKit_CopyHeaders
+    WebCore_CopyPrivateHeaders
+    JavaScriptCore_CopyPrivateHeaders
+    JavaScriptCore_CopyHeaders
     PAL_CopyHeaders
     WTF_CopyHeaders
     bmalloc_CopyHeaders
