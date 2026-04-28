@@ -876,6 +876,10 @@ macro(GENERATE_MESSAGE_SOURCES _output_source _inputs)
         # DEPENDS needs the actual path. Check source tree first, then derived.
         if (EXISTS ${WEBKIT_DIR}/${_file}.messages.in)
             list(APPEND _input_files ${WEBKIT_DIR}/${_file}.messages.in)
+            file(STRINGS ${WEBKIT_DIR}/${_file}.messages.in _swift_attr REGEX "SwiftReceiver")
+            if (_swift_attr)
+                list(APPEND _outputs ${WebKit_DERIVED_SOURCES_DIR}/${_name}MessageReceiver.swift)
+            endif ()
         else ()
             list(APPEND _input_files ${WebKit_DERIVED_SOURCES_DIR}/${_name}.messages.in)
         endif ()
@@ -1167,6 +1171,11 @@ if (ENABLE_BACK_FORWARD_LIST_SWIFT)
 endif ()
 
 list(APPEND WebKit_SOURCES ${WebKit_DERIVED_SOURCES})
+
+if (TARGET WebKit_SwiftCxxHeader)
+    add_custom_target(WebKit_DerivedHeadersForSwift DEPENDS ${WebKit_HEADERS} ${WebKit_DERIVED_SOURCES})
+    add_dependencies(WebKit_SwiftCxxHeader WebKit_DerivedHeadersForSwift)
+endif ()
 
 WEBKIT_COMPUTE_SOURCES(WebKit)
 
