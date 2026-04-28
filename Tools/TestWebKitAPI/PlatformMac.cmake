@@ -100,6 +100,7 @@ list(APPEND TestWebKit_SOURCES
 )
 
 list(APPEND TestWebKit_PRIVATE_INCLUDE_DIRECTORIES
+    ${ICU_INCLUDE_DIRS}
     ${WTF_FRAMEWORK_HEADERS_DIR}
     ${bmalloc_FRAMEWORK_HEADERS_DIR}
     ${WebKit_FRAMEWORK_HEADERS_DIR}
@@ -131,7 +132,6 @@ list(APPEND TestWebKit_LIBRARIES
     JavaScriptCore
     WebCoreTestSupport
     WebKitLegacy
-    WTF
     ${CARBON_LIBRARY}
 )
 
@@ -153,6 +153,7 @@ list(APPEND TestIPC_SOURCES
 )
 
 list(APPEND TestIPC_PRIVATE_INCLUDE_DIRECTORIES
+    ${ICU_INCLUDE_DIRS}
     ${WTF_FRAMEWORK_HEADERS_DIR}
     ${bmalloc_FRAMEWORK_HEADERS_DIR}
     ${WEBKIT_DIR}/Platform/cocoa
@@ -167,8 +168,9 @@ list(APPEND TestIPC_LIBRARIES
     "-framework CoreServices"
     "-framework CoreVideo"
     "-framework IOSurface"
+    "-framework Security"
     "-framework UniformTypeIdentifiers"
-    WTF
+    JavaScriptCore
 )
 
 WEBKIT_ADD_TARGET_CXX_FLAGS(TestIPC -Wno-deprecated-declarations)
