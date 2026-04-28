@@ -135,6 +135,10 @@ WEBKIT_OPTION_END()
 
 set(SWIFT_REQUIRED ON)
 
+# Enabled here rather than via WebKitAdditions/AdditionalFeatureDefines.h because that
+# path is gated on USE(APPLE_INTERNAL_SDK) which is unset on the public SDK.
+SET_AND_EXPOSE_TO_BUILD(ENABLE_BACK_FORWARD_LIST_SWIFT ON)
+
 # Flatten output to match Xcode's layout for run-webkit-tests compatibility.
 # webkitpy/port/driver.py expects WebKitTestRunner, ImageDiff, and frameworks in the same dir.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
