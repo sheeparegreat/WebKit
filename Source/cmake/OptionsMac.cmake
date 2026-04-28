@@ -130,6 +130,10 @@ WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_WRITING_TOOLS PRIVATE ON)
 
 WEBKIT_OPTION_END()
 
+# FIXME: use WebKitAdditions/AdditionalFeatureDefines.h once cmake builds against the
+# Internal SDK so USE(APPLE_INTERNAL_SDK) is set (https://bugs.webkit.org/show_bug.cgi?id=NNNNNN).
+SET_AND_EXPOSE_TO_BUILD(ENABLE_BACK_FORWARD_LIST_SWIFT ON)
+
 # -----------------------------------------------------------------------------
 # Toolchain / SDK resolution
 # -----------------------------------------------------------------------------
