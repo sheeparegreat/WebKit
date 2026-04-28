@@ -130,6 +130,10 @@ WEBKIT_OPTION_DEFAULT_PORT_VALUE(ENABLE_WRITING_TOOLS PRIVATE ON)
 
 WEBKIT_OPTION_END()
 
+# Enabled here rather than via WebKitAdditions/AdditionalFeatureDefines.h because that
+# path is gated on USE(APPLE_INTERNAL_SDK) which is unset on the public SDK.
+SET_AND_EXPOSE_TO_BUILD(ENABLE_BACK_FORWARD_LIST_SWIFT ON)
+
 # -----------------------------------------------------------------------------
 # Toolchain / SDK resolution
 # -----------------------------------------------------------------------------
