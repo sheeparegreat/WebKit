@@ -28,6 +28,8 @@
 
 #pragma once
 
+#ifdef __APPLE__
+
 #ifndef WTF_PLATFORM_GUARD_AGAINST_INDIRECT_INCLUSION
 #error "Please #include <wtf/Platform.h> instead of this file directly."
 #endif
@@ -1185,3 +1187,5 @@
 #if !defined(ENABLE_NETWORK_CACHE_BLOB_STORAGE_MEMORY_CACHE)
 #define ENABLE_NETWORK_CACHE_BLOB_STORAGE_MEMORY_CACHE 1
 #endif
+
+#endif // __APPLE__
