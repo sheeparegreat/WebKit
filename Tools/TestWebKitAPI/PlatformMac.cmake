@@ -135,6 +135,7 @@ list(APPEND TestWebKit_LIBRARIES
     WebKitLegacy
     ${CARBON_LIBRARY}
 )
+list(APPEND TestWebKit_DEPENDENCIES Copy_WebCoreTestSupportPrivateHeaders)
 
 set_source_files_properties(Helpers/cocoa/WebExtensionUtilities.mm PROPERTIES COMPILE_FLAGS "-fobjc-arc")
 
