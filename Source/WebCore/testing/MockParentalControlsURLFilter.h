@@ -36,8 +36,8 @@ namespace WebCore {
 
 class MockParentalControlsURLFilter final : public ParentalControlsURLFilter {
 public:
-    WEBCORE_TESTSUPPORT_EXPORT static Ref<MockParentalControlsURLFilter> create(Vector<URL>&& blockedURLs);
-    WEBCORE_TESTSUPPORT_EXPORT ~MockParentalControlsURLFilter();
+    WEBCORE_EXPORT static Ref<MockParentalControlsURLFilter> create(Vector<URL>&& blockedURLs);
+    WEBCORE_EXPORT ~MockParentalControlsURLFilter();
 
 private:
     explicit MockParentalControlsURLFilter(Vector<URL>&& blockedURLs);
