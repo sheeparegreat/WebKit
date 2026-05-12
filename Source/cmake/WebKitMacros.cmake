@@ -215,7 +215,15 @@ endmacro()
 function(WEBKIT_ADD_PREFIX_HEADER_WITH_PARENT _target _base_target _header _parent_header)
     if (COMPILER_IS_CLANG)
         string(JOIN "," _lang_genex ${ARGN})
+        # Emit the base target's prefix header into cmake_pch.hxx ahead of the
+        # subtarget's. The chained -include-pch below already provides its
+        # contents via the AST when the PCH is loaded, but a compiler launcher
+        # (sccache/ccache/icecream) that preprocesses without honoring -Xclang
+        # -include-pch falls back to -include cmake_pch.hxx alone. Without the
+        # base prefix in that file, the leaf prefix's heavy includes see
+        # neither cmakeconfig.h nor the libc headers the base prefix provides.
         target_precompile_headers(${_target} PRIVATE
+            "$<$<COMPILE_LANGUAGE:${_lang_genex}>:${CMAKE_CURRENT_SOURCE_DIR}/${_parent_header}>"
             "$<$<COMPILE_LANGUAGE:${_lang_genex}>:${CMAKE_CURRENT_SOURCE_DIR}/${_header}>")
         if (APPLE)
             # FIXME: Upstream clang does not appear to propagate parent-PCH state to consumers
@@ -280,7 +288,7 @@ macro(WEBKIT_DEFINE_SUBTARGET_WITH_PREFIX _target _subtarget)
             else ()
                 target_link_libraries(${_target} INTERFACE "${_subobjects}")
             endif ()
-            WEBKIT_ADD_PREFIX_HEADER_WITH_PARENT(${_subtarget} ${_target} ${_arg_PREFIX} "" ${_arg_PREFIX_LANGUAGES})
+            WEBKIT_ADD_PREFIX_HEADER_WITH_PARENT(${_subtarget} ${_target} ${_arg_PREFIX} ${_target}Prefix.h ${_arg_PREFIX_LANGUAGES})
         endif ()
     endif ()
     unset(_arg_PREFIX)
